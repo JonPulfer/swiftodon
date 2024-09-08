@@ -1,39 +1,9 @@
-<p align="center">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/hummingbird-project/hummingbird/assets/9382567/48de534f-8301-44bd-b117-dfb614909efd">
-  <img src="https://github.com/hummingbird-project/hummingbird/assets/9382567/e371ead8-7ca1-43e3-8077-61d8b5eab879">
-</picture>
-</p>  
-<p align="center">
-<a href="https://swift.org">
-  <img src="https://img.shields.io/badge/swift-5.9-brightgreen.svg"/>
-</a>
-<a href="https://discord.gg/7ME3nZ7mP2">
-  <img src="https://img.shields.io/badge/chat-discord-brightgreen.svg"/>
-</a>
-</p>
+# swiftodon
+Hummingbird server framework project
 
-# Hummingbird Template
+## ActivityPub server
+This is an (ActivityPub)[https://www.w3.org/TR/activitypub/#social-web-working-group] server that is capable of federating with 
+services such as (Mastodon)[https://mastodon.social/about].
 
-Template for Hummingbird App
 
-Either click on `Use this template` or run the following to clone locally.
-```bash
-curl -L https://raw.githubusercontent.com/hummingbird-project/template/main/scripts/download.sh | bash -s <project-name> 
-```
 
-Then enter the folder created, run `./configure.sh` and follow the instructions.
-
-## Alternative method
-
-Clone this repository locally
-
-```bash
-git clone https://github.com/hummingbird-project/template
-```
-
-And then call the configure script with a path argument. This will create a new project at the specified path
-
-```bash
-./configure.sh <path to new project>
-```

@@ -9,7 +9,7 @@ import Foundation
 
 /// Object definition taken from specification at [w3c ActivityPub spec](https://www.w3.org/TR/activitystreams-vocabulary/#types).
 /// This will always be the parent container type holding lists that can contain a mixture of `Object` or `Link` elements.
-struct Object: ObjectOrLink, Codable {
+final class Object: ObjectOrLink, Codable {
 	/// [json-LD](https://www.w3.org/TR/activitystreams-core/#jsonld)
 	/// This special context value identifies the processing context.
 	/// Generally, this is going to be `https://www.w3.org/ns/activitystreams`
@@ -25,6 +25,8 @@ struct Object: ObjectOrLink, Codable {
 	var attributedTo: [ObjectOrLink]
 	var audience: [ObjectOrLink]
 	
+	var content: Object?
+	
 	let isObject: Bool = true
 	let isLink: Bool = false
 	
@@ -36,12 +38,13 @@ struct Object: ObjectOrLink, Codable {
 		case attachment
 		case attributedTo
 		case audience
+		case content
 	}
 	
 	func encode(to encoder: any Encoder) throws {
 		// TODO: implement me
 	}
-	
+
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.processingContext = try container.decode(String.self, forKey: .processingContext)
@@ -78,26 +81,13 @@ struct Object: ObjectOrLink, Codable {
 		} catch {
 			self.audience = []
 		}
-	}
-}
-
-struct Link: ObjectOrLink, Codable {
-	var href: String
-	var rel: URL?
-	
-	/// The ActivityPub spec defines this will contain "Link" for Link types.
-	var type: String
-	
-	/// mime media type e.g. "text/html"
-	var mediaType: String?
-	
-	let isObject: Bool = false
-	let isLink: Bool = true
-	
-	enum CodingKeys: String, CodingKey {
-		case href
-		case type
-		case rel
-		case mediaType
+		
+		// content
+		do {
+			let contentObject = try container.decode(Object.self, forKey: .content)
+			self.content = contentObject
+		} catch {
+			self.content = nil
+		}
 	}
 }

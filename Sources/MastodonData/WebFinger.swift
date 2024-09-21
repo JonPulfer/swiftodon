@@ -14,6 +14,11 @@ public struct WebFinger: Codable {
 		case links
 	}
 	
+	public init(subject: String, links: [Link]) {
+		self.subject = subject
+		self.links = links
+	}
+	
 	public init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.subject = try container.decode(String.self, forKey: .subject)

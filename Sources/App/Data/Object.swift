@@ -8,18 +8,19 @@
 import Foundation
 
 /// Object definition taken from specification at [w3c ActivityPub spec](https://www.w3.org/TR/activitystreams-vocabulary/#types).
-/// This will always be the parent container
+/// This will always be the parent container type holding lists that can contain a mixture of `Object` or `Link` elements.
 struct Object: ObjectOrLink, Codable {
-	/// json-LD: https://www.w3.org/TR/activitystreams-core/#jsonld
+	/// [json-LD](https://www.w3.org/TR/activitystreams-core/#jsonld)
 	/// This special context value identifies the processing context.
 	/// Generally, this is going to be `https://www.w3.org/ns/activitystreams`
 	var processingContext: String = "https://www.w3.org/ns/activitystreams"
 	
 	var id: String
+	var name: String
 	
 	/// The ActivityPub spec defines this will contain "Object" for Object types.
 	var type: String
-	var name: String
+	
 	var attachment: [ObjectOrLink]
 	var attributedTo: [ObjectOrLink]
 	var audience: [ObjectOrLink]
@@ -33,6 +34,8 @@ struct Object: ObjectOrLink, Codable {
 		case type
 		case name
 		case attachment
+		case attributedTo
+		case audience
 	}
 	
 	func encode(to encoder: any Encoder) throws {
@@ -45,27 +48,36 @@ struct Object: ObjectOrLink, Codable {
 		self.id = try container.decode(String.self, forKey: .id)
 		self.name = try container.decode(String.self, forKey: .name)
 		self.type = try container.decode(String.self, forKey: .type)
-		var attachmentsContainer = try container.nestedUnkeyedContainer(forKey: .attachment)
-		var attachments: [ObjectOrLink] = []
-		while !attachmentsContainer.isAtEnd {
-			do {
-				let decodedObject = try attachmentsContainer.decode(Object.self)
-				attachments.append(decodedObject)
-				continue
-			} catch {
-				// print(error)
-			}
-			do {
-				let decodedLink = try attachmentsContainer.decode(Link.self)
-				attachments.append(decodedLink)
-				continue
-			} catch {
-				// print(error)
-			}
+		
+		// attachment
+		do {
+			let attachmentContainer = try container.nestedUnkeyedContainer(forKey: .attachment)
+			
+			self.attachment = DecodeArrayOfObjectOrLink(unkeyedContainer:
+				attachmentContainer)
+		} catch {
+			self.attachment = []
 		}
-		self.attachment = attachments
-		self.attributedTo = []
-		self.audience = []
+		
+		// attributedTo
+		do {
+			let attributedToContainer = try container.nestedUnkeyedContainer(forKey: .attributedTo)
+			
+			self.attributedTo = DecodeArrayOfObjectOrLink(unkeyedContainer:
+				attributedToContainer)
+		} catch {
+			self.attributedTo = []
+		}
+		
+		// audience
+		do {
+			let audienceContainer = try container.nestedUnkeyedContainer(forKey: .audience)
+			
+			self.audience = DecodeArrayOfObjectOrLink(unkeyedContainer:
+				audienceContainer)
+		} catch {
+			self.audience = []
+		}
 	}
 }
 
@@ -88,12 +100,4 @@ struct Link: ObjectOrLink, Codable {
 		case rel
 		case mediaType
 	}
-	
-//	init(from decoder: any Decoder) throws {
-//		let container = try decoder.container(keyedBy: CodingKeys.self)
-//		self.href = try container.decode(String.self, forKey: .href)
-//		self.type = try container.decode(String.self, forKey: .type)
-//		self.rel = try container.decode(URL.self, forKey: .rel)
-//		self.mediaType = try container.decode(String.self, forKey: .mediaType)
-//	}
 }

@@ -1,5 +1,7 @@
 import Hummingbird
 import Logging
+import Storage
+import PersonStorage
 
 /// Application arguments protocol. We use a protocol so we can call
 /// `buildApplication` inside Tests as well as in the App executable. 
@@ -50,5 +52,6 @@ func buildRouter() -> Router<AppRequestContext> {
     router.get("/health") { _,_ -> HTTPResponse.Status in
         return .ok
     }
+	router.addRoutes(PersonController(repository: FixturePersonStorage()).endpoints, atPath: "/person/")
     return router
 }

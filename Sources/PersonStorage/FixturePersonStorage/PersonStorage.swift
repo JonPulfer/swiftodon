@@ -6,7 +6,7 @@
 //
 import Storage
 
-public struct FixturePersonStorage: Storage {
+public struct FixturePersonStorage: PersonStorage {
 	var storage: Dictionary<String, PersonModel> = [:]
 
 	public init() {
@@ -15,7 +15,7 @@ public struct FixturePersonStorage: Storage {
 		}
 	}
 
-	public func Get(criteria: Criteria) -> StorageObject? {
+	public func get(criteria: PersonCriteria) -> PersonModel? {
 		if let person = self.storage[criteria.id] {
 			return person
 		}
@@ -23,7 +23,7 @@ public struct FixturePersonStorage: Storage {
 	}
 }
 
-public struct PersonCriteria: Criteria {
+public struct PersonCriteria {
 	public var id: String
 	
 	public init(id: String) {
@@ -31,18 +31,22 @@ public struct PersonCriteria: Criteria {
 	}
 }
 
+public protocol PersonStorage: Sendable {
+	func get(criteria: PersonCriteria) -> PersonModel?
+}
+
 func DummyPersonModels() -> [PersonModel] {
 	return [
 		PersonModel(
-			id: "https://somewhere.com/@someone",
+			id: "https://somewhere.com/person/@someone",
 			type: "Person",
 			serverDialect: ServerDialects.Mastodon,
-			following: "https://somewhere.com/@someone/following",
-			followers: "https://somewhere.com/@someone/followers",
-			inbox: "https://somewhere.com/@someone/inbox",
-			outbox: "https://somewhere.com/@someone/outbox",
-			featured: "https://somewhere.com/@someone/collections/featured",
-			featuredTags: "https://somewhere.com/@someone/collections/tags",
-			endpoints: PersonEndpoints(sharedInbox: "https://somewhere.com/inbox"))
+			following: "https://somewhere.com/person/@someone/following",
+			followers: "https://somewhere.com/person/@someone/followers",
+			inbox: "https://somewhere.com/person/@someone",
+			outbox: "https://somewhere.com/person/@someone/outbox",
+			featured: "https://somewhere.com/person/@someone/collections/featured",
+			featuredTags: "https://somewhere.com/person/@someone/collections/tags",
+			endpoints: PersonEndpoints(sharedInbox: "https://somewhere.com/shared/inbox"))
 		]
 }

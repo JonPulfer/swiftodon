@@ -20,7 +20,6 @@ let package = Package(
 		                  	.product(name: "ArgumentParser", package: "swift-argument-parser"),
 		                  	.product(name: "Hummingbird", package: "hummingbird"),
 		                  	"MastodonData",
-		                  	"Storage",
 		                  	"PersonStorage"
 		                  ],
 		                  path: "Sources/App"),
@@ -42,7 +41,6 @@ let package = Package(
 		.testTarget(name: "AppTests",
 		            dependencies: [
 		            	.byName(name: "App"),
-		            	.byName(name: "Storage"),
 		            	.byName(name: "PersonStorage"),
 		            	.product(name: "HummingbirdTesting", package: "hummingbird")
 		            ],

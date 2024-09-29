@@ -8,7 +8,7 @@ import Foundation
 import MastodonData
 import Storage
 
-public struct PersonModel: StorageObject, Codable {
+public struct PersonModel: Codable {
 	public var id: String
 	public var type: String
 	public var serverDialect: ServerDialects

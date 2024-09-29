@@ -1,6 +1,5 @@
 import Hummingbird
 import Logging
-import Storage
 import PersonStorage
 
 /// Application arguments protocol. We use a protocol so we can call

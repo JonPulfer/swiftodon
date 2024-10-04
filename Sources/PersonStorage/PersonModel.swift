@@ -29,12 +29,12 @@ public struct PersonModel: Codable {
 		              inbox: self.inbox, outbox: self.outbox, featured: self.featured, featuredTags: self.featuredTags,
 		              sharedInbox: self.endpoints.sharedInbox)
 	}
-	
+
 	public init(fromShortId: String) {
 		let personId = personBaseURL + fromShortId
 		self.id = personId
 		self.type = personType
-		self.serverDialect = ServerDialects.Mastodon
+		self.serverDialect = .Mastodon
 		self.following = personId + "/following"
 		self.followers = personId + "/followers"
 		self.inbox = personId + "/inbox"

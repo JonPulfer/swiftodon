@@ -24,6 +24,6 @@ func DecodeArrayOfObjectOrLink(unkeyedContainer: UnkeyedDecodingContainer) -> [O
 			// print(error)
 		}
 	}
-	
+
 	return results
 }

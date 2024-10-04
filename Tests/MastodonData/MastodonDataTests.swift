@@ -38,7 +38,6 @@ import Testing
 }
 
 @Suite struct TestEncoding {
-	
 	@Test func TestEncodingWebFingerExample() {
 		// encode the object to JSON
 		let encodeObject = WebFinger(
@@ -49,7 +48,7 @@ import Testing
 		let encoder = JSONEncoder()
 		encoder.outputFormatting = .withoutEscapingSlashes
 		let encodedJsonData = try! encoder.encode(encodeObject)
-		
+
 		// Decode the JSON back to an object and compare it with the original
 		let decodedObject: WebFinger = try! JSONDecoder().decode(WebFinger.self, from: encodedJsonData)
 		#expect(decodedObject.subject == encodeObject.subject)

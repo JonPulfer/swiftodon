@@ -7,7 +7,7 @@
 import Storage
 
 public actor FixturePersonStorage: PersonStorage {
-	let storage: InMemoryStore = InMemoryStore()
+	let storage: InMemoryStore = .init()
 
 	public init() {
 		for fixture in DummyPersonModels() {
@@ -39,7 +39,7 @@ public struct PersonCriteria: Sendable {
 
 public struct CreatePerson: Sendable {
 	public let id: String
-	
+
 	public init(id: String) {
 		self.id = id
 	}
@@ -58,11 +58,11 @@ func DummyPersonModels() -> [PersonModel] {
 
 final class InMemoryStore {
 	var storage: [String: PersonModel] = [:]
-	
+
 	func add(model: PersonModel) {
 		self.storage[model.id] = model
 	}
-	
+
 	func get(id: String) -> PersonModel? {
 		return self.storage[id]
 	}

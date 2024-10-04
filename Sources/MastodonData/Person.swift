@@ -19,8 +19,8 @@ public struct Person: ResponseEncodable, Codable {
 	var endpoints: PersonEndpoints
 
 	public init(id: String, type: String, following: String, followers: String,
-	     inbox: String, outbox: String, featured: String, featuredTags: String,
-	     sharedInbox: String)
+	            inbox: String, outbox: String, featured: String, featuredTags: String,
+	            sharedInbox: String)
 	{
 		self.id = id
 		self.type = type

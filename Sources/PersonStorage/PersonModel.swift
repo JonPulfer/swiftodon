@@ -34,7 +34,7 @@ public struct PersonModel: Codable {
 		let personId = personBaseURL + fromShortId
 		self.id = personId
 		self.type = personType
-		self.serverDialect = .Mastodon
+		self.serverDialect = .mastodon
 		self.following = personId + "/following"
 		self.followers = personId + "/followers"
 		self.inbox = personId + "/inbox"

@@ -7,7 +7,7 @@
 import Foundation
 
 public enum ServerDialects: String, Codable {
-	case Mastodon = "mastodon"
+	case mastodon = "mastodon"
 }
 
 extension ServerDialects: Sendable {}

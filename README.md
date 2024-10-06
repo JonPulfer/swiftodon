@@ -9,8 +9,5 @@
 This is an [ActivityPub](https://www.w3.org/TR/activitypub/#social-web-working-group) server that is capable of federating with 
 services such as [Mastodon](https://mastodon.social/about). 
 
-It is being built using the Hummingbird v2 web framework and Swift 6. The intention is for it to have pluggable modules for 
+It is being built using the [Hummingbird](https://hummingbird.codes) v2 web framework and Swift 6. The intention is for it to have pluggable modules for 
 infrastructure services such as object storage.
-
-
-

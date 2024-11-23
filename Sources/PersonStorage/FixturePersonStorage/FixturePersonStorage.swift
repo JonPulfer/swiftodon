@@ -29,33 +29,6 @@ public actor FixturePersonStorage: PersonStorage {
 	}
 }
 
-public struct PersonCriteria: Sendable {
-	public var id: String
-
-	public init(id: String) {
-		self.id = id
-	}
-}
-
-public struct CreatePerson: Sendable {
-	public let id: String
-
-	public init(id: String) {
-		self.id = id
-	}
-}
-
-public protocol PersonStorage: Sendable {
-	func get(criteria: PersonCriteria) async -> PersonModel?
-	func create(from: CreatePerson) async throws -> PersonModel?
-}
-
-func DummyPersonModels() -> [PersonModel] {
-	return [
-		PersonModel(fromShortId: "@someone")
-	]
-}
-
 final class InMemoryStore {
 	var storage: [String: PersonModel] = [:]
 

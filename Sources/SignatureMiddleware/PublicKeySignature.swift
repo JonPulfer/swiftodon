@@ -4,11 +4,10 @@
 //
 //  Created by Jonathan Pulfer on 05/10/2024.
 //
+import Foundation
 import Hummingbird
-import Crypto
 import KeyStorage
 
-struct PublicKeySignatureMiddleware {
-	let repository:
-	
+struct PublicKeySignatureMiddleware<Repository: KeyStorage> {
+	let repository: Repository
 }

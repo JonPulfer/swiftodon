@@ -5,17 +5,19 @@ import PackageDescription
 
 let package = Package(
 	name: "swiftodon",
-	platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17)],
+	platforms: [.macOS(.v15)],
 	products: [
 		.executable(name: "App", targets: ["App"]),
-		.library(name: "MastodonData", targets: ["MastodonData"])
+		.library(name: "MastodonData", targets: ["MastodonData"]),
+		// .library(name: "KeyStorage", targets: ["KeyStorage"]),
+		.library(name: "PersonStorage", targets: ["PersonStorage"]),
+		.library(name: "Storage", targets: ["Storage"])
 	],
 	dependencies: [
 		.package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.0.0"),
 		.package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
-		// swift-crypto 1.x, 2.x and 3.x are almost API compatible, so most clients
-		// should allow any of them
-		.package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "4.0.0")
+		.package(url: "https://github.com/hummingbird-project/hummingbird-fluent.git", from: "2.0.0-beta.5"),
+		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0")
 	],
 	targets: [
 		.executableTarget(name: "App",
@@ -23,25 +25,20 @@ let package = Package(
 		                  	.product(name: "ArgumentParser", package: "swift-argument-parser"),
 		                  	.product(name: "Hummingbird", package: "hummingbird"),
 		                  	"MastodonData",
-		                  	"PersonStorage",
-		                  	"SignatureMiddleware"
+		                  	"PersonStorage"
 		                  ],
 		                  path: "Sources/App"),
 		.target(name: "MastodonData", dependencies: [
 			.product(name: "Hummingbird", package: "hummingbird")
 		], path: "Sources/MastodonData"),
+		// .target(name: "KeyStorage", dependencies: []),
 		.target(name: "Storage", dependencies: [], path: "Sources/Storage"),
 		.target(name: "PersonStorage", dependencies: [
 			"Storage",
-			"MastodonData"
+			"MastodonData",
+			.product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+			.product(name: "HummingbirdFluent", package: "hummingbird-fluent")
 		], path: "Sources/PersonStorage"),
-		.target(name: "KeyStorage", dependencies: [
-			.product(name: "Crypto", package: "swift-crypto")
-		],
-		path: "Sources/KeyStorage"),
-		.target(name: "SignatureMiddleware", dependencies: [
-			.product(name: "Crypto", package: "swift-crypto")
-		], path: "Sources/SignatureMiddleware"),
 		.testTarget(name: "MastodonDataTests",
 		            dependencies: [
 		            	.byName(name: "MastodonData"),
@@ -58,8 +55,7 @@ let package = Package(
 		            path: "Tests/AppTests"),
 		.testTarget(name: "SignatureMiddlewareTests",
 		            dependencies: [
-		            	"SignatureMiddleware",
-		            	.product(name: "Crypto", package: "swift-crypto")
+		            	// .byName(name: "KeyStorage")
 		            ],
 		            path: "Tests/SignatureMiddleware")
 	]

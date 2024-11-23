@@ -15,7 +15,7 @@ let personType: String = "Person"
 public struct PersonModel: Codable {
 	public var id: String
 	public var type: String
-	public var serverDialect: ServerDialects
+	public var serverDialect: ServerDialect
 	var following: String
 	var followers: String
 	var inbox: String
@@ -52,3 +52,30 @@ public struct PersonEndpoints: Codable {
 }
 
 extension PersonEndpoints: Sendable {}
+
+public struct PersonCriteria: Sendable {
+	public var id: String
+
+	public init(id: String) {
+		self.id = id
+	}
+}
+
+public struct CreatePerson: Sendable {
+	public let id: String
+
+	public init(id: String) {
+		self.id = id
+	}
+}
+
+public protocol PersonStorage: Sendable {
+	func get(criteria: PersonCriteria) async -> PersonModel?
+	func create(from: CreatePerson) async throws -> PersonModel?
+}
+
+func DummyPersonModels() -> [PersonModel] {
+	return [
+		PersonModel(fromShortId: "@someone")
+	]
+}

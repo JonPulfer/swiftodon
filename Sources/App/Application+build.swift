@@ -27,7 +27,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 			.info
 		return logger
 	}()
-	let router = buildRouter()
+	let router = await buildRouter()
 	let app = Application(
 		router: router,
 		configuration: .init(
@@ -36,11 +36,12 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 		),
 		logger: logger
 	)
+
 	return app
 }
 
 /// Build router
-func buildRouter() -> Router<AppRequestContext> {
+func buildRouter() async -> Router<AppRequestContext> {
 	let router = Router(context: AppRequestContext.self)
 	// Add middleware
 	router.addMiddleware {
@@ -51,6 +52,7 @@ func buildRouter() -> Router<AppRequestContext> {
 	router.get("/health") { _, _ -> HTTPResponse.Status in
 		.ok
 	}
-	router.addRoutes(PersonController(repository: FixturePersonStorage()).endpoints, atPath: "/person/")
+	let repos = await SqlitePersonStorage(migrate: true)
+	router.addRoutes(PersonController(repository: repos).endpoints, atPath: "/person/")
 	return router
 }

@@ -21,7 +21,7 @@ struct App: AsyncParsableCommand, AppArguments {
 
 /// Extend `Logger.Level` so it can be used as an argument
 #if hasFeature(RetroactiveAttribute)
-	extension Logger.Level: @retroactive ExpressibleByArgument {}
+extension Logger.Level: @retroactive ExpressibleByArgument {}
 #else
-	extension Logger.Level: ExpressibleByArgument {}
+extension Logger.Level: ExpressibleByArgument {}
 #endif

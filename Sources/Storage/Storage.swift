@@ -6,8 +6,26 @@
 //
 import Foundation
 
-public enum ServerDialects: String, Codable {
-	case mastodon = "mastodon"
+public enum ServerDialect: String, Codable, CaseIterable {
+	case mastodon
+
+	public init(fromString: String) {
+		for dialect in ServerDialect.allCases {
+			if fromString == dialect.rawValue {
+				self = dialect
+			}
+		}
+		self = ServerDialect(rawValue: "mastodon")!
+	}
 }
 
-extension ServerDialects: Sendable {}
+extension ServerDialect: Sendable {
+	public func match(string: String) -> ServerDialect? {
+		for dialect in ServerDialect.allCases {
+			if string == dialect.rawValue {
+				return dialect
+			}
+		}
+		return nil
+	}
+}

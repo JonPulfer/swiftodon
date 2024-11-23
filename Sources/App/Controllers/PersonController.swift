@@ -23,7 +23,7 @@ struct PersonController<Repository: PersonStorage> {
 		if let personObject = await repository.get(criteria: PersonCriteria(id: controllerPath + id)) {
 			return personObject.toPerson()
 		}
-		return nil
+		throw HTTPError(.notFound)
 	}
 
 	struct CreatePersonRequest: Decodable {

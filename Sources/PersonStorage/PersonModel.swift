@@ -79,3 +79,4 @@ func DummyPersonModels() -> [PersonModel] {
 		PersonModel(fromShortId: "@someone")
 	]
 }
+

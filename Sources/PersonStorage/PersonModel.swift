@@ -8,39 +8,55 @@ import Foundation
 import MastodonData
 import Storage
 
-let personBaseURL: String = "https://somewhere.com/person/"
-let sharedInboxURL: String = "https://somewhere.com/shared/inbox"
+let serverBaseURL: String = "https://somewhere.com"
+let personBaseURL: String = serverBaseURL + "/person/"
+let sharedInboxURL: String = serverBaseURL + "/shared/inbox"
 let personType: String = "Person"
 
 public struct PersonModel: Codable {
 	public var id: String
+	public var publicURL: String
+	public var realURL: String
+	public var name: String
+	public var fullName: String
+	public var createdAt: Date
+	public var bio: String = ""
+	public var profilePictureURL: String = ""
+	public var headerPictureURL: String = ""
 	public var type: String
 	public var serverDialect: ServerDialect
-	var following: String
-	var followers: String
-	var inbox: String
-	var outbox: String
-	var featured: String
-	var featuredTags: String
-	var endpoints: PersonEndpoints
+	public var following: String
+	public var followers: String
+	public var inbox: String
+	public var outbox: String
+	public var featured: String
+	public var featuredTags: String
+	public var endpoints: PersonEndpoints
 
-	public func toPerson() -> Person {
-		return Person(id: self.id, type: self.type, following: self.following, followers: self.followers,
-		              inbox: self.inbox, outbox: self.outbox, featured: self.featured, featuredTags: self.featuredTags,
-		              sharedInbox: self.endpoints.sharedInbox)
+	public func toMastodonAccount() -> Account {
+		return Account(id: self.id, username: self.name, account: self.name, displayName: self.fullName,
+					   createdAt: self.createdAt, note: self.bio, url: self.publicURL, uri: self.realURL,
+					   avatar: self.profilePictureURL, header: self.headerPictureURL,
+					lastStatusAt: Date())
 	}
 
-	public init(fromShortId: String) {
-		let personId = personBaseURL + fromShortId
-		self.id = personId
+	public init(name: String, fullName: String) {
+		let handle = "@" + name
+		let uri = personBaseURL + handle
+		self.id = UUID().uuidString
 		self.type = personType
+		self.name = name
+		self.fullName = fullName
+		self.publicURL = serverBaseURL + "/" + handle
+		self.realURL = uri
+		self.createdAt = Date()
 		self.serverDialect = .mastodon
-		self.following = personId + "/following"
-		self.followers = personId + "/followers"
-		self.inbox = personId + "/inbox"
-		self.outbox = personId + "/outbox"
-		self.featured = personId + "/collections/featured"
-		self.featuredTags = personId + "/collections/tags"
+		self.following = uri + "/following"
+		self.followers = uri + "/followers"
+		self.inbox = uri + "/inbox"
+		self.outbox = uri + "/outbox"
+		self.featured = uri + "/collections/featured"
+		self.featuredTags = uri + "/collections/tags"
 		self.endpoints = PersonEndpoints(sharedInbox: sharedInboxURL)
 	}
 }
@@ -48,24 +64,45 @@ public struct PersonModel: Codable {
 extension PersonModel: Sendable {}
 
 public struct PersonEndpoints: Codable {
-	var sharedInbox: String
+	public var sharedInbox: String
 }
 
 extension PersonEndpoints: Sendable {}
 
+/// Criteria to pass to the storage get method to select particular
+/// records.
 public struct PersonCriteria: Sendable {
-	public var id: String
+	
+	/// This is the short name used by the person when they created the account.
+	///
+	/// Example:
+	///  - `myAccount`
+	public var handle: String
 
-	public init(id: String) {
-		self.id = id
+	public init(handle: String) {
+		self.handle = handle
 	}
 }
 
+/// Request parameters to create a new ``PersonModel`` in the datastore.
 public struct CreatePerson: Sendable {
-	public let id: String
+	
+	/// This is the name the person wants to create on this server.
+	///
+	/// Example:
+	///  - `janeD`
+	public let name: String
+	
+	/// This is the full display name the person wants to create on
+	/// this server.
+	///
+	/// Example:
+	///   - `Jane Doe`
+	public let fullName: String
 
-	public init(id: String) {
-		self.id = id
+	public init(name: String, fullName: String) {
+		self.name = name
+		self.fullName = fullName
 	}
 }
 
@@ -76,7 +113,7 @@ public protocol PersonStorage: Sendable {
 
 func DummyPersonModels() -> [PersonModel] {
 	return [
-		PersonModel(fromShortId: "@someone")
+		PersonModel(name: "someone", fullName: "Some One")
 	]
 }
 

@@ -15,8 +15,10 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.0.0"),
+		.package(url: "https://github.com/hummingbird-project/hummingbird-auth.git", from: "2.0.0"),
 		.package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
 		.package(url: "https://github.com/hummingbird-project/hummingbird-fluent.git", from: "2.0.0-beta.5"),
+		.package(url: "https://github.com/swift-server/swift-webauthn.git", from: "1.0.0-alpha.2"),
 		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0")
 	],
 	targets: [
@@ -24,6 +26,8 @@ let package = Package(
 		                  dependencies: [
 		                  	.product(name: "ArgumentParser", package: "swift-argument-parser"),
 		                  	.product(name: "Hummingbird", package: "hummingbird"),
+							.product(name: "HummingbirdAuth", package: "hummingbird-auth"),
+							.product(name: "WebAuthn", package: "swift-webauthn"),
 		                  	"MastodonData",
 		                  	"PersonStorage"
 		                  ],
@@ -36,7 +40,9 @@ let package = Package(
 		.target(name: "PersonStorage", dependencies: [
 			"Storage",
 			"MastodonData",
+			.product(name: "WebAuthn", package: "swift-webauthn"),
 			.product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+			.product(name: "HummingbirdAuth", package: "hummingbird-auth"),
 			.product(name: "HummingbirdFluent", package: "hummingbird-fluent")
 		], path: "Sources/PersonStorage"),
 		.testTarget(name: "MastodonDataTests",

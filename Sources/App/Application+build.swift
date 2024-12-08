@@ -23,7 +23,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 		var logger = Logger(label: "swiftodon")
 		logger.logLevel =
 			arguments.logLevel ??
-			environment.get("LOG_LEVEL").map { Logger.Level(rawValue: $0) ?? .info } ??
+			environment.get("LOG_LEVEL").map { Logger.Level(rawValue: $0) ?? .debug } ??
 			.info
 		return logger
 	}()
@@ -46,13 +46,17 @@ func buildRouter() async -> Router<AppRequestContext> {
 	// Add middleware
 	router.addMiddleware {
 		// logging middleware
-		LogRequestsMiddleware(.info)
+		LogRequestsMiddleware(.debug)
 	}
 	// Add health endpoint
 	router.get("/health") { _, _ -> HTTPResponse.Status in
 		.ok
 	}
-	let repos = await SqlitePersonStorage(migrate: true)
-	router.addRoutes(PersonController(repository: repos).endpoints, atPath: "/person/")
+	
+	// WebAuthN credential repository
+	let webAuthNRepos = await SqliteWebAuthNStorage(migrate: true)
+	
+	let personRepos = await SqlitePersonStorage(migrate: true)
+	router.addRoutes(PersonController(repository: personRepos).endpoints, atPath: "/person/")
 	return router
 }

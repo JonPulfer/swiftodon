@@ -1,5 +1,5 @@
 {
-  "originHash" : "cdbd09a008c608f15df3e97e176acc2d1b04f060b552abde3aa89071edd2477c",
+  "originHash" : "5bc39945eefb93ab32e377a389e96cc1275b17889f979839231bf97ab9eae622",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -42,7 +42,16 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/hummingbird-project/hummingbird.git",
       "state" : {
-        "revision" : "d4f792d209f02b26a17c0105751220da65207fb2",
+        "revision" : "70b0714b4c4a192a51a9ddcc691fcf2ab3bc9141",
+        "version" : "2.5.0"
+      }
+    },
+    {
+      "identity" : "hummingbird-auth",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hummingbird-project/hummingbird-auth.git",
+      "state" : {
+        "revision" : "0878b5e70c0f77962100d8b42871055539bb9f65",
         "version" : "2.0.1"
       }
     },
@@ -101,12 +110,21 @@
       }
     },
     {
+      "identity" : "swift-asn1",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-asn1.git",
+      "state" : {
+        "revision" : "7faebca1ea4f9aaf0cda1cef7c43aecd2311ddf6",
+        "version" : "1.3.0"
+      }
+    },
+    {
       "identity" : "swift-async-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms.git",
       "state" : {
-        "revision" : "6ae9a051f76b81cc668305ceed5b0e0a7fd93d20",
-        "version" : "1.0.1"
+        "revision" : "5c8bd186f48c16af0775972700626f0b74588278",
+        "version" : "1.0.2"
       }
     },
     {
@@ -128,12 +146,30 @@
       }
     },
     {
+      "identity" : "swift-crypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-crypto.git",
+      "state" : {
+        "revision" : "ff0f781cf7c6a22d52957e50b104f5768b50c779",
+        "version" : "3.10.0"
+      }
+    },
+    {
       "identity" : "swift-distributed-tracing",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-distributed-tracing.git",
       "state" : {
         "revision" : "11c756c5c4d7de0eeed8595695cadd7fa107aa19",
         "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-extras-base64",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-extras/swift-extras-base64.git",
+      "state" : {
+        "revision" : "dc8121fdd2b444c97d6b0534e8ad4ddecbe0d5f4",
+        "version" : "1.0.0"
       }
     },
     {
@@ -242,6 +278,24 @@
       "state" : {
         "revision" : "d2ba781702a1d8285419c15ee62fd734a9437ff5",
         "version" : "1.3.2"
+      }
+    },
+    {
+      "identity" : "swift-webauthn",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-server/swift-webauthn.git",
+      "state" : {
+        "revision" : "95ce09430d13852db971db56ae0b55d1911db2ee",
+        "version" : "1.0.0-alpha.2"
+      }
+    },
+    {
+      "identity" : "swiftcbor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/unrelentingtech/SwiftCBOR.git",
+      "state" : {
+        "revision" : "04ccff117f6549121d5721ec84fdf0162122b90e",
+        "version" : "0.5.0"
       }
     }
   ],

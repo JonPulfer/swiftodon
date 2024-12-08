@@ -16,14 +16,14 @@ public actor FixturePersonStorage: PersonStorage {
 	}
 
 	public func get(criteria: PersonCriteria) -> PersonModel? {
-		if let person = self.storage.get(id: criteria.id) {
+		if let person = self.storage.get(id: criteria.handle) {
 			return person
 		}
 		return nil
 	}
 
 	public func create(from: CreatePerson) throws -> PersonModel? {
-		let model = PersonModel(fromShortId: from.id)
+		let model = PersonModel(name: from.name, fullName: from.fullName)
 		self.storage.add(model: model)
 		return model
 	}

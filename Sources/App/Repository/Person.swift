@@ -1,5 +1,5 @@
 //
-//  PersonModel.swift
+//  Person.swift
 //  swiftodon
 //
 //  Created by Jonathan Pulfer on 28/09/2024.
@@ -7,17 +7,24 @@
 import Foundation
 import MastodonData
 import Storage
+@preconcurrency import WebAuthn
 
 let serverBaseURL: String = "https://somewhere.com"
 let personBaseURL: String = serverBaseURL + "/person/"
 let sharedInboxURL: String = serverBaseURL + "/shared/inbox"
 let personType: String = "Person"
 
-public struct PersonModel: Codable {
+enum PersonError: Error {
+	case idMissing
+}
+
+public struct Person: Codable {
 	public var id: String
 	public var publicURL: String
 	public var realURL: String
 	public var name: String
+	public var sessionId: String?
+	public var sessionCreatedAt: Date?
 	public var fullName: String
 	public var createdAt: Date
 	public var bio: String = ""
@@ -59,9 +66,22 @@ public struct PersonModel: Codable {
 		self.featuredTags = uri + "/collections/tags"
 		self.endpoints = PersonEndpoints(sharedInbox: sharedInboxURL)
 	}
+	
+	public func requireID() throws -> UUID {
+		if self.id.isEmpty {
+			throw PersonError.idMissing
+		}
+		return UUID(uuidString: self.id)!
+	}
+	
+	var publicKeyCredentialUserEntity: PublicKeyCredentialUserEntity {
+		get throws {
+			try .init(id: .init(self.requireID().uuidString.utf8), name: self.name, displayName: self.name)
+		}
+	}
 }
 
-extension PersonModel: Sendable {}
+extension Person: Sendable {}
 
 public struct PersonEndpoints: Codable {
 	public var sharedInbox: String
@@ -77,10 +97,23 @@ public struct PersonCriteria: Sendable {
 	///
 	/// Example:
 	///  - `myAccount`
-	public var handle: String
+	public var handle: String?
+	
+	/// This is the id of the person assigned when they created the account.
+	///
+	/// Example:
+	///  - ``
+	public var id: String?
+	
+	
 
-	public init(handle: String) {
-		self.handle = handle
+	public init(handle: String?, id: String?) {
+		if let handleSupplied = handle {
+			self.handle = handleSupplied
+		}
+		if let idSupplied = id {
+			self.id = idSupplied
+		}
 	}
 }
 
@@ -107,13 +140,16 @@ public struct CreatePerson: Sendable {
 }
 
 public protocol PersonStorage: Sendable {
-	func get(criteria: PersonCriteria) async -> PersonModel?
-	func create(from: CreatePerson) async throws -> PersonModel?
+	associatedtype Identifier: Codable
+	associatedtype Person: Sendable
+	
+	func get(criteria: PersonCriteria) async -> Person?
+	func create(from: CreatePerson) async throws -> Person?
 }
 
-func DummyPersonModels() -> [PersonModel] {
+func DummyPersonModels() -> [Person] {
 	return [
-		PersonModel(name: "someone", fullName: "Some One")
+		Person(name: "someone", fullName: "Some One")
 	]
 }
 

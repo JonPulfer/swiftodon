@@ -4,10 +4,14 @@ import HummingbirdTesting
 import Logging
 import Testing
 
-@testable import swiftodon
+@testable import App
 
 @Suite struct AppTests {
 	struct TestArguments: AppArguments {
+		var privateKey: String { "certs/server.key" }
+		var certificateChain: String { "certs/server.crt" }
+		
+		let inMemoryDatabase = true
 		let hostname = "127.0.0.1"
 		let port = 0
 		let logLevel: Logger.Level? = .trace

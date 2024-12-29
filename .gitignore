@@ -7,3 +7,4 @@
 xcuserdata/
 /.vscode/*
 !/.vscode/hummingbird.code-snippets
+db.sqlite

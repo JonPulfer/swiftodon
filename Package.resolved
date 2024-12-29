@@ -1,5 +1,5 @@
 {
-  "originHash" : "5bc39945eefb93ab32e377a389e96cc1275b17889f979839231bf97ab9eae622",
+  "originHash" : "72924c432fdb84174a18ed742f76074b7ba00bd3568898df9fa8b26bb018b923",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -200,6 +200,15 @@
       }
     },
     {
+      "identity" : "swift-mustache",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hummingbird-project/swift-mustache.git",
+      "state" : {
+        "revision" : "9de71fc4d10f0efc0ac758d0acf14e75d39b47b4",
+        "version" : "2.0.0"
+      }
+    },
+    {
       "identity" : "swift-nio",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
@@ -281,21 +290,21 @@
       }
     },
     {
-      "identity" : "swift-webauthn",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-server/swift-webauthn.git",
-      "state" : {
-        "revision" : "95ce09430d13852db971db56ae0b55d1911db2ee",
-        "version" : "1.0.0-alpha.2"
-      }
-    },
-    {
       "identity" : "swiftcbor",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/unrelentingtech/SwiftCBOR.git",
       "state" : {
         "revision" : "04ccff117f6549121d5721ec84fdf0162122b90e",
         "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "webauthn-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-server/webauthn-swift.git",
+      "state" : {
+        "revision" : "95ce09430d13852db971db56ae0b55d1911db2ee",
+        "version" : "1.0.0-alpha.2"
       }
     }
   ],

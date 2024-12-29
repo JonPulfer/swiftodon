@@ -4,6 +4,12 @@ import Logging
 
 @main
 struct App: AsyncParsableCommand, AppArguments {
+	@Flag(name: .shortAndLong)
+	var inMemoryDatabase: Bool = false
+	
+	var privateKey: String { "certs/server.key" }
+	var certificateChain: String { "certs/server.crt" }
+	
 	@Option(name: .shortAndLong)
 	var hostname: String = "127.0.0.1"
 

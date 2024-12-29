@@ -1,6 +1,11 @@
+import FluentSQLiteDriver
+import Foundation
 import Hummingbird
+import HummingbirdAuth
+import HummingbirdFluent
+import HummingbirdRouter
 import Logging
-import PersonStorage
+import Mustache
 
 /// Application arguments protocol. We use a protocol so we can call
 /// `buildApplication` inside Tests as well as in the App executable.
@@ -10,10 +15,13 @@ public protocol AppArguments {
 	var hostname: String { get }
 	var port: Int { get }
 	var logLevel: Logger.Level? { get }
+	var inMemoryDatabase: Bool { get }
+	var certificateChain: String { get }
+	var privateKey: String { get }
 }
 
 // Request context used by application
-typealias AppRequestContext = BasicRequestContext
+typealias AppRequestContext = BasicSessionRequestContext<UUID, Person>
 
 ///  Build application
 /// - Parameter arguments: application arguments
@@ -27,8 +35,71 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 			.info
 		return logger
 	}()
-	let router = await buildRouter()
-	let app = Application(
+	
+	let fluent = Fluent(logger: logger)
+	
+	
+	// add sqlite database
+	if arguments.inMemoryDatabase {
+		fluent.databases.use(.sqlite(.memory), as: .sqlite)
+	} else {
+		fluent.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
+	}
+	// set up persist driver before migrate
+	let persist = await FluentPersistDriver(fluent: fluent)
+	await fluent.migrations.add(CreateFluentPerson())
+	await fluent.migrations.add(CreateFluentWebAuthnCredential())
+	try await fluent.migrate()
+	
+	// load mustache template library
+	let library = try await MustacheLibrary(directory: Bundle.module.resourcePath!)
+	
+	let personRepos = FluentPersonStorage(fluent: fluent)
+	
+	/// Authenticator storing the user
+	let webAuthnSessionAuthenticator = SessionAuthenticator(
+		users: personRepos,
+		context: WebAuthnRequestContext.self
+	)
+	
+	let router = RouterBuilder(context: WebAuthnRequestContext.self) {
+		// logging middleware
+		LogRequestsMiddleware(.debug)
+		// add file middleware to server HTML files
+		FileMiddleware(searchForIndexHtml: true, logger: logger)
+		// session middleware
+		SessionMiddleware(storage: persist)
+		
+		HTMLController(
+			mustacheLibrary: library,
+			fluent: fluent,
+			webAuthnSessionAuthenticator: webAuthnSessionAuthenticator
+		)
+		
+		RouteGroup("api") {
+			WebAuthnController(
+				webauthn: .init(
+					config: .init(
+						relyingPartyID: "localhost",
+						relyingPartyName: "swiftodon",
+						relyingPartyOrigin: "http://localhost:8080"
+					)
+				),
+				fluent: fluent,
+				webAuthnSessionAuthenticator: webAuthnSessionAuthenticator
+			)
+		}
+		
+		RouteGroup("person") {
+			PersonController(repository: personRepos)
+		}
+		
+		Get("/health") { _, _ -> HTTPResponse.Status in
+			return .ok
+		}
+	}
+	
+	var app = Application(
 		router: router,
 		configuration: .init(
 			address: .hostname(arguments.hostname, port: arguments.port),
@@ -36,27 +107,9 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 		),
 		logger: logger
 	)
+	
+	app.addServices(fluent)
 
 	return app
 }
 
-/// Build router
-func buildRouter() async -> Router<AppRequestContext> {
-	let router = Router(context: AppRequestContext.self)
-	// Add middleware
-	router.addMiddleware {
-		// logging middleware
-		LogRequestsMiddleware(.debug)
-	}
-	// Add health endpoint
-	router.get("/health") { _, _ -> HTTPResponse.Status in
-		.ok
-	}
-	
-	// WebAuthN credential repository
-	let webAuthNRepos = await SqliteWebAuthNStorage(migrate: true)
-	
-	let personRepos = await SqlitePersonStorage(migrate: true)
-	router.addRoutes(PersonController(repository: personRepos).endpoints, atPath: "/person/")
-	return router
-}

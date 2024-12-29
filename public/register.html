@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Swiftodon Register</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/webauthn.js?v=1"></script>
+    <script type="text/javascript">
+        function registerUser(event) {
+            const usernameInput = document.getElementById("username");
+            const username = usernameInput.value;
+            register(username)
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="text-center">
+        <h2 class="text-3xl p-3">Swiftodon Register</h2>
+    </div>
+    <div class="p-6 max-w-md mx-auto bg-white rounded-xl space-x-4 shadow-lg">
+        <div class="p-2 text-center">
+            <form action="#">
+                <label for="username" class="text-sm">Enter your account name</label><br/>
+                <input type="text" id="username" name="username"/ class="border"><input/><br/>
+                <div class="inline-block border p-2 shadow-md">
+                    <button type="button" onclick="registerUser(event);" class="hover:text-slate-500">Go</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

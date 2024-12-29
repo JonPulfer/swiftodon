@@ -10,7 +10,6 @@ let package = Package(
 		.executable(name: "App", targets: ["App"]),
 		.library(name: "MastodonData", targets: ["MastodonData"]),
 		// .library(name: "KeyStorage", targets: ["KeyStorage"]),
-		.library(name: "PersonStorage", targets: ["PersonStorage"]),
 		.library(name: "Storage", targets: ["Storage"])
 	],
 	dependencies: [
@@ -18,44 +17,42 @@ let package = Package(
 		.package(url: "https://github.com/hummingbird-project/hummingbird-auth.git", from: "2.0.0"),
 		.package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
 		.package(url: "https://github.com/hummingbird-project/hummingbird-fluent.git", from: "2.0.0-beta.5"),
-		.package(url: "https://github.com/swift-server/swift-webauthn.git", from: "1.0.0-alpha.2"),
+		.package(url: "https://github.com/swift-server/webauthn-swift.git", from: "1.0.0-alpha.2"),
+		.package(url: "https://github.com/hummingbird-project/swift-mustache.git", from: "2.0.0-beta.1"),
 		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0")
 	],
 	targets: [
-		.executableTarget(name: "App",
-		                  dependencies: [
-		                  	.product(name: "ArgumentParser", package: "swift-argument-parser"),
-		                  	.product(name: "Hummingbird", package: "hummingbird"),
-							.product(name: "HummingbirdAuth", package: "hummingbird-auth"),
-							.product(name: "WebAuthn", package: "swift-webauthn"),
-		                  	"MastodonData",
-		                  	"PersonStorage"
-		                  ],
-		                  path: "Sources/App"),
+		.executableTarget(
+			name: "App",
+			dependencies: [
+				.product(name: "ArgumentParser", package: "swift-argument-parser"),
+				.product(name: "Hummingbird", package: "hummingbird"),
+				.product(name: "HummingbirdAuth", package: "hummingbird-auth"),
+				.product(name: "HummingbirdRouter", package: "hummingbird"),
+				.product(name: "HummingbirdFluent", package: "hummingbird-fluent"),
+				.product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+				.product(name: "WebAuthn", package: "webauthn-swift"),
+				.product(name: "Mustache", package: "swift-mustache"),
+				"MastodonData",
+				"Storage"
+			],
+			path: "Sources/App",
+			resources: [.process("Resources")]
+		),
 		.target(name: "MastodonData", dependencies: [
 			.product(name: "Hummingbird", package: "hummingbird")
 		], path: "Sources/MastodonData"),
 		// .target(name: "KeyStorage", dependencies: []),
 		.target(name: "Storage", dependencies: [], path: "Sources/Storage"),
-		.target(name: "PersonStorage", dependencies: [
-			"Storage",
-			"MastodonData",
-			.product(name: "WebAuthn", package: "swift-webauthn"),
-			.product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
-			.product(name: "HummingbirdAuth", package: "hummingbird-auth"),
-			.product(name: "HummingbirdFluent", package: "hummingbird-fluent")
-		], path: "Sources/PersonStorage"),
 		.testTarget(name: "MastodonDataTests",
 		            dependencies: [
 		            	.byName(name: "MastodonData"),
-		            	.byName(name: "Storage"),
-		            	.byName(name: "PersonStorage")
+		            	.byName(name: "Storage")
 		            ],
 		            path: "Tests/MastodonData"),
 		.testTarget(name: "AppTests",
 		            dependencies: [
 		            	.byName(name: "App"),
-		            	.byName(name: "PersonStorage"),
 		            	.product(name: "HummingbirdTesting", package: "hummingbird")
 		            ],
 		            path: "Tests/AppTests"),

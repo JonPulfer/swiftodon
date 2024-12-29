@@ -14,7 +14,7 @@ public struct WebAuthNModel: Sendable {
 
 public struct CreateWebAuthN: @unchecked Sendable {
 	public let userUuid: UUID
-	public let publicKey: EncodedBase64
+	public let publicKey: Credential
 }
 
 public struct WebAuthNCriteria: Sendable {

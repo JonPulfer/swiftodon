@@ -8,10 +8,10 @@
 import Foundation
 
 protocol AttributeTo {
-	var attributableTo: String { get }
+    var attributableTo: String { get }
 }
 
 protocol ObjectOrLink: Codable {
-	var isObject: Bool { get }
-	var isLink: Bool { get }
+    var isObject: Bool { get }
+    var isLink: Bool { get }
 }

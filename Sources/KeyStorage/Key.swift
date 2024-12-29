@@ -9,36 +9,36 @@ import Hummingbird
 import Security
 
 final class Key: Model, HBResponseCodable {
-	static let schema = "key"
+    static let schema = "key"
 
-	var id: UUID
+    var id: UUID
 
-	public let ownerId: String
+    public let ownerId: String
 
-	public let createdAt: Date
+    public let createdAt: Date
 
-	public let key: SecKey?
+    public let key: SecKey?
 
-	public init(ownerId: String) {
-		self.ownerId = ownerId
-		self.id = UUID().uuidString
-		self.createdAt = Date()
+    public init(ownerId: String) {
+        self.ownerId = ownerId
+        id = UUID().uuidString
+        createdAt = Date()
 
-		let tag = "swiftodon.keys." + self.id
-		let attributes: [String: Any] =
-			[kSecAttrKeyType as String: kSecAttrKeyTypeEC,
-			 kSecAttrKeySizeInBits as String: NSNumber(value: 256),
-			 kSecPrivateKeyAttrs as String:
-			 	[kSecAttrIsPermanent as String: true,
-			 	 kSecAttrApplicationTag as String: tag.data(using: .utf8)!]]
+        let tag = "swiftodon.keys." + id
+        let attributes: [String: Any] =
+            [kSecAttrKeyType as String: kSecAttrKeyTypeEC,
+             kSecAttrKeySizeInBits as String: NSNumber(value: 256),
+             kSecPrivateKeyAttrs as String:
+                 [kSecAttrIsPermanent as String: true,
+                  kSecAttrApplicationTag as String: tag.data(using: .utf8)!]]
 
-		var error: Unmanaged<CFError>?
-		guard let privateKey = SecKeyCreateRandomKey(attributes as CFDictionary, &error) else {
-			print("error creating key: \(error!)")
-			self.key = nil
-			return
-		}
+        var error: Unmanaged<CFError>?
+        guard let privateKey = SecKeyCreateRandomKey(attributes as CFDictionary, &error) else {
+            print("error creating key: \(error!)")
+            key = nil
+            return
+        }
 
-		self.key = privateKey
-	}
+        key = privateKey
+    }
 }

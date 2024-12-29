@@ -9,5 +9,5 @@ import Hummingbird
 import KeyStorage
 
 struct PublicKeySignatureMiddleware<Repository: KeyStorage> {
-	let repository: Repository
+    let repository: Repository
 }

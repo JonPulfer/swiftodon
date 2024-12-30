@@ -15,15 +15,15 @@ struct PersonController: RouterController {
     let repository: any PersonStorage
 
     let controllerPath: String = "https://somewhere.com/person/"
-	
-	let webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
+
+    let webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
 
     var body: some RouterMiddleware<Context> {
-		Get("/:id") {
-			self.webAuthnSessionAuthenticator
-			RedirectMiddleware(to: "/login.html")
-			self.get
-		}
+        Get("/:id") {
+            webAuthnSessionAuthenticator
+            RedirectMiddleware(to: "/login.html")
+            get
+        }
     }
 
     @Sendable func get(request _: Request, context: some RequestContext) async throws -> Account? {

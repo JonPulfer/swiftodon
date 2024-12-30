@@ -75,11 +75,11 @@ async function login() {
 }
 
 /**
- * Login user
+ * Logout user
  */
 async function logout() {
     try {
-        // initiate login
+        // initiate logout
         const response = await fetch('/api/user/logout')
         if (response.status !== 200) {
             throw Error(`Error: status code: ${response.status}`)

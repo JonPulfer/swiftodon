@@ -26,11 +26,15 @@ final class Key: Model, HBResponseCodable {
 
         let tag = "swiftodon.keys." + id
         let attributes: [String: Any] =
-            [kSecAttrKeyType as String: kSecAttrKeyTypeEC,
-             kSecAttrKeySizeInBits as String: NSNumber(value: 256),
-             kSecPrivateKeyAttrs as String:
-                 [kSecAttrIsPermanent as String: true,
-                  kSecAttrApplicationTag as String: tag.data(using: .utf8)!]]
+            [
+                kSecAttrKeyType as String: kSecAttrKeyTypeEC,
+                kSecAttrKeySizeInBits as String: NSNumber(value: 256),
+                kSecPrivateKeyAttrs as String:
+                    [
+                        kSecAttrIsPermanent as String: true,
+                        kSecAttrApplicationTag as String: tag.data(using: .utf8)!,
+                    ],
+            ]
 
         var error: Unmanaged<CFError>?
         guard let privateKey = SecKeyCreateRandomKey(attributes as CFDictionary, &error) else {

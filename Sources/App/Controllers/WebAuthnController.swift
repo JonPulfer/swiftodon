@@ -22,17 +22,17 @@ struct WebAuthnController: RouterController, Sendable {
 
     // return RouteGroup with user login endpoints
     var body: some RouterMiddleware<Context> {
-        return RouteGroup("user") {
-            Post("signup", handler: self.signup)
-            Get("login", handler: self.beginAuthentication)
-            Post("login", handler: self.finishAuthentication)
+        RouteGroup("user") {
+            Post("signup", handler: signup)
+            Get("login", handler: beginAuthentication)
+            Post("login", handler: finishAuthentication)
             Get("logout") {
-                self.webAuthnSessionAuthenticator
-                self.logout
+                webAuthnSessionAuthenticator
+                logout
             }
             RouteGroup("register") {
-                Post("start", handler: self.beginRegistration)
-                Post("finish", handler: self.finishRegistration)
+                Post("start", handler: beginRegistration)
+                Post("finish", handler: finishRegistration)
             }
         }
     }
@@ -80,7 +80,7 @@ struct WebAuthnController: RouterController, Sendable {
                 credentialCreationData: input,
                 // this is likely to be removed soon
                 confirmCredentialIDNotRegisteredYet: { id in
-                    try await FluentWebAuthnCredential.query(on: self.fluent.db()).filter(\.$id == id).first() == nil
+                    try await FluentWebAuthnCredential.query(on: fluent.db()).filter(\.$id == id).first() == nil
                 }
             )
             try await FluentWebAuthnCredential(credential: credential, userId: user.requireID()).save(on: fluent.db())

@@ -49,9 +49,9 @@ struct HTMLController: RouterController {
     // return Route for home page
     var body: some RouterMiddleware<Context> {
         Get("/") {
-            self.webAuthnSessionAuthenticator
+            webAuthnSessionAuthenticator
             RedirectMiddleware(to: "/login.html")
-            self.home
+            home
         }
     }
 

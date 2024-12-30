@@ -44,22 +44,28 @@ let package = Package(
         ], path: "Sources/MastodonData"),
         // .target(name: "KeyStorage", dependencies: []),
         .target(name: "Storage", dependencies: [], path: "Sources/Storage"),
-        .testTarget(name: "MastodonDataTests",
-                    dependencies: [
-                        .byName(name: "MastodonData"),
-                        .byName(name: "Storage"),
-                    ],
-                    path: "Tests/MastodonData"),
-        .testTarget(name: "AppTests",
-                    dependencies: [
-                        .byName(name: "App"),
-                        .product(name: "HummingbirdTesting", package: "hummingbird"),
-                    ],
-                    path: "Tests/AppTests"),
-        .testTarget(name: "SignatureMiddlewareTests",
-                    dependencies: [
-                        // .byName(name: "KeyStorage")
-                    ],
-                    path: "Tests/SignatureMiddleware"),
+        .testTarget(
+            name: "MastodonDataTests",
+            dependencies: [
+                .byName(name: "MastodonData"),
+                .byName(name: "Storage"),
+            ],
+            path: "Tests/MastodonData"
+        ),
+        .testTarget(
+            name: "AppTests",
+            dependencies: [
+                .byName(name: "App"),
+                .product(name: "HummingbirdTesting", package: "hummingbird"),
+            ],
+            path: "Tests/AppTests"
+        ),
+        .testTarget(
+            name: "SignatureMiddlewareTests",
+            dependencies: [
+                // .byName(name: "KeyStorage")
+            ],
+            path: "Tests/SignatureMiddleware"
+        ),
     ]
 )

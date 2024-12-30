@@ -24,7 +24,7 @@ public struct FluentPersonStorage: PersonStorage, UserSessionRepository {
     }
 
     public func getUser(from id: String, context _: HummingbirdAuth.UserRepositoryContext) async throws -> Person? {
-        return await get(criteria: PersonCriteria(handle: nil, id: id))
+        await get(criteria: PersonCriteria(handle: nil, id: id))
     }
 
     //	public func getUser(from session: WebAuthnSession, context: HummingbirdAuth.UserRepositoryContext) async throws -> Person? {
@@ -151,9 +151,18 @@ final class FluentPersonModel: Model, @unchecked Sendable {
 
     public init() {}
 
-    public init(type: String, id: String, serverDialect: String, following: String, followers: String,
-                inbox: String, outbox: String, featured: String, featuredTags: String, endpoints: PersonEndpoints)
-    {
+    public init(
+        type: String,
+        id: String,
+        serverDialect: String,
+        following: String,
+        followers: String,
+        inbox: String,
+        outbox: String,
+        featured: String,
+        featuredTags: String,
+        endpoints: PersonEndpoints
+    ) {
         self.type = type
         self.id = UUID(uuidString: id)
         self.serverDialect = serverDialect
@@ -196,10 +205,10 @@ final class FluentPersonModel: Model, @unchecked Sendable {
         if let recordId = id {
             toModel.id = recordId.uuidString
         }
-        if let sessionId = sessionId {
+        if let sessionId {
             toModel.sessionId = sessionId
         }
-        if let sessionCreatedAt = sessionCreatedAt {
+        if let sessionCreatedAt {
             toModel.sessionCreatedAt = ISO8601DateFormatter().date(from: sessionCreatedAt)!
         }
         toModel.publicURL = publicURL

@@ -41,10 +41,19 @@ public struct Person: Codable {
     public var endpoints: PersonEndpoints
 
     public func toMastodonAccount() -> Account {
-        return Account(id: id, username: name, account: name, displayName: fullName,
-                       createdAt: createdAt, note: bio, url: publicURL, uri: realURL,
-                       avatar: profilePictureURL, header: headerPictureURL,
-                       lastStatusAt: Date())
+        Account(
+            id: id,
+            username: name,
+            account: name,
+            displayName: fullName,
+            createdAt: createdAt,
+            note: bio,
+            url: publicURL,
+            uri: realURL,
+            avatar: profilePictureURL,
+            header: headerPictureURL,
+            lastStatusAt: Date()
+        )
     }
 
     public init(name: String, fullName: String) {
@@ -144,7 +153,7 @@ public protocol PersonStorage: Sendable {
 }
 
 func DummyPersonModels() -> [Person] {
-    return [
+    [
         Person(name: "someone", fullName: "Some One"),
     ]
 }

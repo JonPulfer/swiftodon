@@ -15,9 +15,9 @@ public extension FieldProperty {
     func transform(_ name: String) -> Any? {
         switch name {
         case "wrappedValue":
-            return wrappedValue
+            wrappedValue
         default:
-            return nil
+            nil
         }
     }
 }
@@ -30,9 +30,9 @@ public extension IDProperty {
     func transform(_ name: String) -> Any? {
         switch name {
         case "wrappedValue":
-            return wrappedValue
+            wrappedValue
         default:
-            return nil
+            nil
         }
     }
 }

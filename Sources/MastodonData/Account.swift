@@ -34,14 +34,30 @@ public struct Account: ResponseEncodable, Codable, Equatable {
     var noindex: Bool
     var fields: [AccountField]
 
-    public init(id: String, username: String, account: String, displayName: String,
-                locked: Bool = false, bot: Bool = false, discoverable: Bool = false,
-                indexable: Bool = false, group: Bool = false, createdAt: Date,
-                note: String, url: String, uri: String, avatar: String, header: String,
-                followersCount: UInt64 = 0, followingCount: UInt64 = 0, statusesCount: UInt64 = 0,
-                lastStatusAt: Date, hideCollections: Bool = false, noindex: Bool = false,
-                fields: [AccountField] = [])
-    {
+    public init(
+        id: String,
+        username: String,
+        account: String,
+        displayName: String,
+        locked: Bool = false,
+        bot: Bool = false,
+        discoverable: Bool = false,
+        indexable: Bool = false,
+        group: Bool = false,
+        createdAt: Date,
+        note: String,
+        url: String,
+        uri: String,
+        avatar: String,
+        header: String,
+        followersCount: UInt64 = 0,
+        followingCount: UInt64 = 0,
+        statusesCount: UInt64 = 0,
+        lastStatusAt: Date,
+        hideCollections: Bool = false,
+        noindex: Bool = false,
+        fields: [AccountField] = []
+    ) {
         self.id = id
         self.username = username
         self.account = account

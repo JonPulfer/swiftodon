@@ -22,10 +22,10 @@ final class InMemoryStore {
     }
 
     func get(ownerId: String) -> KeyModel? {
-        return storageByOwnerId[ownerId]
+        storageByOwnerId[ownerId]
     }
 
     func get(keyId: String) -> KeyModel? {
-        return storageByKeyId[keyId]
+        storageByKeyId[keyId]
     }
 }

@@ -90,7 +90,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
         }
 
         RouteGroup("person") {
-            PersonController(repository: personRepos)
+			PersonController(repository: personRepos, webAuthnSessionAuthenticator: webAuthnSessionAuthenticator)
         }
 
         Get("/health") { _, _ -> HTTPResponse.Status in

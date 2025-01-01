@@ -19,11 +19,12 @@ struct PersonController: RouterController {
     let webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
 
     var body: some RouterMiddleware<Context> {
-        Get("/:id") {
-            webAuthnSessionAuthenticator
-            RedirectMiddleware(to: "/login.html")
-            get
-        }
+        // Session middleware to control access to all endpoints in this controller
+        webAuthnSessionAuthenticator
+        RedirectMiddleware(to: "/login.html")
+
+        // Endpoints
+        Get("/:id", handler: get)
     }
 
     @Sendable func get(request _: Request, context: some RequestContext) async throws -> Account? {

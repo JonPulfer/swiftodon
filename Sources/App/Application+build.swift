@@ -34,15 +34,18 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
         return logger
     }()
 
+    /// Fluent is being used for storing relational data.
+    ///
+    /// To change the underlying datastore to a different RDBMS:
+    ///  - Change the dependencies in the 'Package' file
+    ///  - Change the imports to use the new driver
+    ///  - Change the database settings here
     let fluent = Fluent(logger: logger)
-
-    // add sqlite database
     if arguments.inMemoryDatabase {
         fluent.databases.use(.sqlite(.memory), as: .sqlite)
     } else {
         fluent.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
     }
-    // set up persist driver before migrate
     let persist = await FluentPersistDriver(fluent: fluent)
     await fluent.migrations.add(CreateFluentPerson())
     await fluent.migrations.add(CreateFluentWebAuthnCredential())
@@ -61,7 +64,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 
     let router = RouterBuilder(context: WebAuthnRequestContext.self) {
         // logging middleware
-		LogRequestsMiddleware(.info)
+        LogRequestsMiddleware(.info)
         // add file middleware to server HTML files
         FileMiddleware(searchForIndexHtml: true, logger: logger)
         // session middleware

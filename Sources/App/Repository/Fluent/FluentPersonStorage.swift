@@ -30,14 +30,6 @@ public struct FluentPersonStorage: PersonStorage, UserSessionRepository {
         await get(criteria: PersonCriteria(handle: nil, id: id))
     }
 
-    //	public func getUser(from session: WebAuthnSession, context: HummingbirdAuth.UserRepositoryContext) async throws -> Person? {
-    //		guard case .authenticated(let userId) = session else {
-    //			return nil
-    //		}
-    //
-    //		return await self.get(criteria: PersonCriteria(handle: nil, id: userId.uuidString))
-    //	}
-
     public typealias Identifier = WebAuthnSession
 
     public typealias User = Person

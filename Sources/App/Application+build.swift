@@ -30,9 +30,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
     let logger = {
         var logger = Logger(label: "swiftodon")
         logger.logLevel =
-            arguments.logLevel ??
-            environment.get("LOG_LEVEL").map { Logger.Level(rawValue: $0) ?? .debug } ??
-            .info
+            arguments.logLevel ?? environment.get("LOG_LEVEL").map { Logger.Level(rawValue: $0) ?? .debug } ?? .info
         return logger
     }()
 
@@ -63,7 +61,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 
     let router = RouterBuilder(context: WebAuthnRequestContext.self) {
         // logging middleware
-        LogRequestsMiddleware(.debug)
+		LogRequestsMiddleware(.info)
         // add file middleware to server HTML files
         FileMiddleware(searchForIndexHtml: true, logger: logger)
         // session middleware

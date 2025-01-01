@@ -56,8 +56,10 @@ final class Object: ObjectOrLink, Codable {
         do {
             let attachmentContainer = try container.nestedUnkeyedContainer(forKey: .attachment)
 
-            attachment = DecodeArrayOfObjectOrLink(unkeyedContainer:
-                attachmentContainer)
+            attachment = DecodeArrayOfObjectOrLink(
+                unkeyedContainer:
+                    attachmentContainer
+            )
         } catch {
             attachment = []
         }
@@ -66,8 +68,10 @@ final class Object: ObjectOrLink, Codable {
         do {
             let attributedToContainer = try container.nestedUnkeyedContainer(forKey: .attributedTo)
 
-            attributedTo = DecodeArrayOfObjectOrLink(unkeyedContainer:
-                attributedToContainer)
+            attributedTo = DecodeArrayOfObjectOrLink(
+                unkeyedContainer:
+                    attributedToContainer
+            )
         } catch {
             attributedTo = []
         }
@@ -76,8 +80,10 @@ final class Object: ObjectOrLink, Codable {
         do {
             let audienceContainer = try container.nestedUnkeyedContainer(forKey: .audience)
 
-            audience = DecodeArrayOfObjectOrLink(unkeyedContainer:
-                audienceContainer)
+            audience = DecodeArrayOfObjectOrLink(
+                unkeyedContainer:
+                    audienceContainer
+            )
         } catch {
             audience = []
         }

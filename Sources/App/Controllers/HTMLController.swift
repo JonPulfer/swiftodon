@@ -14,7 +14,11 @@ import Mustache
 /// Redirects to login page if no user has been authenticated
 struct RedirectMiddleware<Context: AuthRequestContext>: RouterMiddleware {
     let to: String
-    func handle(_ request: Request, context: Context, next: (Request, Context) async throws -> Response) async throws -> Response {
+    func handle(
+        _ request: Request,
+        context: Context,
+        next: (Request, Context) async throws -> Response
+    ) async throws -> Response {
         guard context.identity != nil else {
             // if not authenticated then redirect to login page
             return .redirect(to: "\(to)?from=\(request.uri)", type: .found)
@@ -61,7 +65,7 @@ struct HTMLController: RouterController {
         let user = try context.requireIdentity()
         // Render home template and return as HTML
         let object: [String: Any] = [
-            "name": user.name,
+            "name": user.name
         ]
         let html = homeTemplate.render(object)
         return HTML(html: html)

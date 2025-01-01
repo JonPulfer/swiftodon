@@ -35,7 +35,9 @@ public struct FluentWebAuthNStorage: WebAuthNStorage {
     public func get(criteria: WebAuthNCriteria) async -> WebAuthNModel? {
         do {
             if let criteriaUuid = UUID(uuidString: criteria.userUuid) {
-                if let dbPersonModel = try await FluentPersonModel.query(on: fluent.db()).filter(\FluentPersonModel.$id == criteriaUuid).with(\.$webAuthnCredential).first() {
+                if let dbPersonModel = try await FluentPersonModel.query(on: fluent.db()).filter(
+                    \FluentPersonModel.$id == criteriaUuid
+                ).with(\.$webAuthnCredential).first() {
                     if let cred = dbPersonModel.webAuthnCredential {
                         return cred.toWebAuthNModel()
                     }

@@ -18,7 +18,10 @@ import Storage
 /// specific way Fluent stores the data by transforming between the
 /// ``Person`` and an internal model.
 public struct FluentPersonStorage: PersonStorage, UserSessionRepository {
-    public func getUser(from session: WebAuthnSession, context _: HummingbirdAuth.UserRepositoryContext) async throws -> Person? {
+    public func getUser(
+        from session: WebAuthnSession,
+        context _: HummingbirdAuth.UserRepositoryContext
+    ) async throws -> Person? {
         guard case let .authenticated(userId) = session else { return nil }
         return await get(criteria: PersonCriteria(handle: nil, id: userId.uuidString))
     }
@@ -31,7 +34,7 @@ public struct FluentPersonStorage: PersonStorage, UserSessionRepository {
     //		guard case .authenticated(let userId) = session else {
     //			return nil
     //		}
-//
+    //
     //		return await self.get(criteria: PersonCriteria(handle: nil, id: userId.uuidString))
     //	}
 
@@ -50,12 +53,16 @@ public struct FluentPersonStorage: PersonStorage, UserSessionRepository {
     public func get(criteria: PersonCriteria) async -> Person? {
         do {
             if let handleSupplied = criteria.handle {
-                let dbModel = try await FluentPersonModel.query(on: fluent.db()).filter(\FluentPersonModel.$name == handleSupplied).first()
+                let dbModel = try await FluentPersonModel.query(on: fluent.db()).filter(
+                    \FluentPersonModel.$name == handleSupplied
+                ).first()
                 return dbModel?.fluentModelToPersonModel()
             }
             if let idSupplied = criteria.id {
                 if let idUuid = UUID(uuidString: idSupplied) {
-                    let dbModel = try await FluentPersonModel.query(on: fluent.db()).filter(\FluentPersonModel.$id == idUuid).first()
+                    let dbModel = try await FluentPersonModel.query(on: fluent.db()).filter(
+                        \FluentPersonModel.$id == idUuid
+                    ).first()
                     return dbModel?.fluentModelToPersonModel()
                 }
             }

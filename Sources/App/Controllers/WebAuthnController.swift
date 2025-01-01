@@ -43,9 +43,10 @@ struct WebAuthnController: RouterController, Sendable {
 
     @Sendable func signup(request: Request, context: Context) async throws -> Response {
         let input = try await request.decode(as: SignUpInput.self, context: context)
-        guard try await FluentPersonModel.query(on: fluent.db())
-            .filter(\.$name == input.username)
-            .first() == nil
+        guard
+            try await FluentPersonModel.query(on: fluent.db())
+                .filter(\.$name == input.username)
+                .first() == nil
         else {
             throw HTTPError(.conflict, message: "Username already taken.")
         }
@@ -57,14 +58,19 @@ struct WebAuthnController: RouterController, Sendable {
     }
 
     /// Begin registering a User
-    @Sendable func beginRegistration(request _: Request, context: Context) async throws -> PublicKeyCredentialCreationOptions {
+    @Sendable func beginRegistration(
+        request _: Request,
+        context: Context
+    ) async throws -> PublicKeyCredentialCreationOptions {
         let registrationSession = try await context.sessions.session?.session(fluent: fluent)
         guard case let .signedUp(user) = registrationSession else { throw HTTPError(.unauthorized) }
         let options = try webauthn.beginRegistration(user: user.publicKeyCredentialUserEntity)
-        let session = try WebAuthnSession(from: .registering(
-            user: user,
-            challenge: options.challenge
-        ))
+        let session = try WebAuthnSession(
+            from: .registering(
+                user: user,
+                challenge: options.challenge
+            )
+        )
         context.sessions.setSession(session, expiresIn: .seconds(600))
         return options
     }
@@ -97,9 +103,11 @@ struct WebAuthnController: RouterController, Sendable {
     /// Begin Authenticating a user
     @Sendable func beginAuthentication(_: Request, context: Context) async throws -> PublicKeyCredentialRequestOptions {
         let options = try webauthn.beginAuthentication(timeout: 60000)
-        let session = try WebAuthnSession(from: .authenticating(
-            challenge: options.challenge
-        ))
+        let session = try WebAuthnSession(
+            from: .authenticating(
+                challenge: options.challenge
+            )
+        )
         context.sessions.setSession(session, expiresIn: .seconds(600))
         return options
     }
@@ -110,10 +118,11 @@ struct WebAuthnController: RouterController, Sendable {
         let input = try await request.decode(as: AuthenticationCredential.self, context: context)
         guard case let .authenticating(challenge) = authenticationSession else { throw HTTPError(.unauthorized) }
         let id = input.id.urlDecoded.asString()
-        guard let webAuthnCredential = try await FluentWebAuthnCredential.query(on: fluent.db())
-            .filter(\.$id == id)
-            .with(\.$fluentPersonModel)
-            .first()
+        guard
+            let webAuthnCredential = try await FluentWebAuthnCredential.query(on: fluent.db())
+                .filter(\.$id == id)
+                .with(\.$fluentPersonModel)
+                .first()
         else {
             throw HTTPError(.unauthorized)
         }
@@ -130,7 +139,10 @@ struct WebAuthnController: RouterController, Sendable {
             context.logger.error("\(error)")
             throw HTTPError(.unauthorized)
         }
-        try context.sessions.setSession(.authenticated(userId: webAuthnCredential.fluentPersonModel.requireID()), expiresIn: .seconds(24 * 60 * 60))
+        try context.sessions.setSession(
+            .authenticated(userId: webAuthnCredential.fluentPersonModel.requireID()),
+            expiresIn: .seconds(24 * 60 * 60)
+        )
         return .ok
     }
 
@@ -142,9 +154,9 @@ struct WebAuthnController: RouterController, Sendable {
 }
 
 #if hasFeature(RetroactiveAttribute)
-    extension PublicKeyCredentialCreationOptions: @retroactive ResponseEncodable {}
-    extension PublicKeyCredentialRequestOptions: @retroactive ResponseEncodable {}
+extension PublicKeyCredentialCreationOptions: @retroactive ResponseEncodable {}
+extension PublicKeyCredentialRequestOptions: @retroactive ResponseEncodable {}
 #else
-    extension PublicKeyCredentialCreationOptions: ResponseEncodable {}
-    extension PublicKeyCredentialRequestOptions: ResponseEncodable {}
+extension PublicKeyCredentialCreationOptions: ResponseEncodable {}
+extension PublicKeyCredentialRequestOptions: ResponseEncodable {}
 #endif

@@ -33,7 +33,10 @@ public enum WebAuthnSession: Codable, Sendable {
         case let .signedUp(user):
             self = try .signedUp(userId: user.requireID())
         case let .registering(user, challenge):
-            self = try .registering(userId: user.requireID(), encodedChallenge: challenge.base64URLEncodedString().asString())
+            self = try .registering(
+                userId: user.requireID(),
+                encodedChallenge: challenge.base64URLEncodedString().asString()
+            )
         case let .authenticated(user):
             self = try .authenticated(userId: user.requireID())
         }
@@ -46,14 +49,26 @@ public enum WebAuthnSession: Codable, Sendable {
             guard let challenge = URLEncodedBase64(encodedChallenge).decodedBytes else { return nil }
             return .authenticating(challenge: challenge)
         case let .signedUp(userId):
-            guard let user = await FluentPersonStorage(fluent: fluent).get(criteria: PersonCriteria(handle: nil, id: userId.uuidString)) else { return nil }
+            guard
+                let user = await FluentPersonStorage(fluent: fluent).get(
+                    criteria: PersonCriteria(handle: nil, id: userId.uuidString)
+                )
+            else { return nil }
             return .signedUp(user: user)
         case let .registering(userId, encodedChallenge):
-            guard let user = await FluentPersonStorage(fluent: fluent).get(criteria: PersonCriteria(handle: nil, id: userId.uuidString)) else { return nil }
+            guard
+                let user = await FluentPersonStorage(fluent: fluent).get(
+                    criteria: PersonCriteria(handle: nil, id: userId.uuidString)
+                )
+            else { return nil }
             guard let challenge = URLEncodedBase64(encodedChallenge).decodedBytes else { return nil }
             return .registering(user: user, challenge: challenge)
         case let .authenticated(userId):
-            guard let user = await FluentPersonStorage(fluent: fluent).get(criteria: PersonCriteria(handle: nil, id: userId.uuidString)) else { return nil }
+            guard
+                let user = await FluentPersonStorage(fluent: fluent).get(
+                    criteria: PersonCriteria(handle: nil, id: userId.uuidString)
+                )
+            else { return nil }
             return .authenticated(user: user)
         }
     }

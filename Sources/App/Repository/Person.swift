@@ -154,6 +154,6 @@ public protocol PersonStorage: Sendable {
 
 func DummyPersonModels() -> [Person] {
     [
-        Person(name: "someone", fullName: "Some One"),
+        Person(name: "someone", fullName: "Some One")
     ]
 }

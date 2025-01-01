@@ -48,6 +48,7 @@ async function register(username) {
  */
 async function login() {
     try {
+		const redirectTo = location.search.split('from=')[1];
         // initiate login
         const response = await fetch('/api/user/login')
         if (response.status !== 200) {
@@ -68,7 +69,11 @@ async function login() {
         if (finishResponse.status !== 200) {
             throw Error(`Error: status code: ${finishResponse.status}`)
         }
-        location = "/";
+		if (redirectTo.length > 0) {
+			location = redirectTo;
+		} else {
+			location = "/";
+		}
     } catch(error) {
         alert(`Login failed: ${error.message}`)
     }

@@ -38,9 +38,9 @@ public extension IDProperty {
 }
 
 #if hasFeature(RetroactiveAttribute)
-    extension FieldProperty: @retroactive MustacheTransformable {}
-    extension IDProperty: @retroactive MustacheTransformable {}
+extension FieldProperty: @retroactive MustacheTransformable {}
+extension IDProperty: @retroactive MustacheTransformable {}
 #else
-    extension FieldProperty: MustacheTransformable {}
-    extension IDProperty: MustacheTransformable {}
+extension FieldProperty: MustacheTransformable {}
+extension IDProperty: MustacheTransformable {}
 #endif

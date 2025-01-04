@@ -11,3 +11,15 @@ services such as [Mastodon](https://mastodon.social/about).
 
 It is being built using the [Hummingbird](https://hummingbird.codes) v2 web framework and Swift 6. The intention is for it to have pluggable modules for 
 infrastructure services such as object storage.
+
+## Feature roadmap
+My loose plan is to build out the features that I use so that I can run my own server.
+
+ * home timeline
+ * follow
+ * boost
+ * reply
+ * media stored on S3 or similar
+ * registration verification via email
+ * follow hashtags
+ * search users

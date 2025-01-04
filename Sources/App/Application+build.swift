@@ -44,11 +44,15 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
     if arguments.inMemoryDatabase {
         fluent.databases.use(.sqlite(.memory), as: .sqlite)
     } else {
-        fluent.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
+        fluent.databases.use(.sqlite(.file("db.sqlite"), sqlLogLevel: .info), as: .sqlite)
     }
     let persist = await FluentPersistDriver(fluent: fluent)
     await fluent.migrations.add(CreateFluentPerson())
     await fluent.migrations.add(CreateFluentWebAuthnCredential())
+    await fluent.migrations.add(CreateFluentStatus())
+    await fluent.migrations.add(CreateStatusAccountIdIndex())
+    await fluent.migrations.add(CreateStatusConversationIdIndex())
+    await fluent.migrations.add(CreateStatusInReplyToIdIndex())
     try await fluent.migrate()
 
     // load mustache template library

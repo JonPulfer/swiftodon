@@ -1,4 +1,4 @@
 format:
-	swift format -ir Sources/
+	swift format -ipr Sources/
 
 .PHONY: format

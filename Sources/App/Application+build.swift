@@ -47,12 +47,9 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
         fluent.databases.use(.sqlite(.file("db.sqlite"), sqlLogLevel: .info), as: .sqlite)
     }
     let persist = await FluentPersistDriver(fluent: fluent)
-    await fluent.migrations.add(CreateFluentPerson())
+    await AddPersonMigrations(fluent: fluent)
     await fluent.migrations.add(CreateFluentWebAuthnCredential())
-    await fluent.migrations.add(CreateFluentStatus())
-    await fluent.migrations.add(CreateStatusAccountIdIndex())
-    await fluent.migrations.add(CreateStatusConversationIdIndex())
-    await fluent.migrations.add(CreateStatusInReplyToIdIndex())
+    await AddStatusMigrations(fluent: fluent)
     try await fluent.migrate()
 
     // load mustache template library

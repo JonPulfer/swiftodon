@@ -7,7 +7,7 @@
 
 ## ActivityPub server
 This is an [ActivityPub](https://www.w3.org/TR/activitypub/#social-web-working-group) server that is capable of federating with 
-services such as [Mastodon](https://mastodon.social/about). 
+services such as [Mastodon](https://mastodon.social/about). [Documentation for Mastodon](https://docs.joinmastodon.org)
 
 It is being built using the [Hummingbird](https://hummingbird.codes) v2 web framework and Swift 6. The intention is for it to have pluggable modules for 
 infrastructure services such as object storage.
@@ -15,11 +15,13 @@ infrastructure services such as object storage.
 ## Feature roadmap
 My loose plan is to build out the features that I use so that I can run my own server.
 
- * home timeline
- * follow
- * boost
- * reply
- * media stored on S3 or similar
- * registration verification via email
- * follow hashtags
- * search users
+ - [x] WebAuthN -> Register account
+ - [ ] home timeline
+ - [ ] follow
+ - [ ] boost
+ - [ ] reply
+ - [ ] media stored on S3 or similar
+ - [ ] application credentials 
+ - [ ] registration verification via email
+ - [ ] follow hashtags
+ - [ ] search users

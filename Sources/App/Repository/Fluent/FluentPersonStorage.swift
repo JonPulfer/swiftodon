@@ -45,17 +45,19 @@ public struct FluentPersonStorage: PersonStorage, UserSessionRepository {
     public func get(criteria: PersonCriteria) async -> Person? {
         do {
             if let handleSupplied = criteria.handle {
-                let dbModel = try await FluentPersonModel.query(on: fluent.db()).filter(
+                if let dbModel = try await FluentPersonModel.query(on: fluent.db()).filter(
                     \FluentPersonModel.$name == handleSupplied
-                ).first()
-                return dbModel?.fluentModelToPersonModel()
+                ).first() {
+                    return dbModel.fluentModelToPersonModel()
+                }
             }
             if let idSupplied = criteria.id {
                 if let idUuid = UUID(uuidString: idSupplied) {
-                    let dbModel = try await FluentPersonModel.query(on: fluent.db()).filter(
+                    if let dbModel = try await FluentPersonModel.query(on: fluent.db()).filter(
                         \FluentPersonModel.$id == idUuid
-                    ).first()
-                    return dbModel?.fluentModelToPersonModel()
+                    ).first() {
+                        return dbModel.fluentModelToPersonModel()
+                    }
                 }
             }
         } catch {
@@ -179,7 +181,7 @@ final class FluentPersonModel: Model, @unchecked Sendable {
         name = fromPersonModel.name
         sessionId = fromPersonModel.sessionId
         if let sessionCreatedAt = fromPersonModel.sessionCreatedAt {
-            self.sessionCreatedAt = sessionCreatedAt.formatted(.iso8601.locale(Locale(identifier: "en_US_POSIX")))
+            self.sessionCreatedAt = RFC3339Timestamp(fromDate: sessionCreatedAt)
         }
         fullName = fromPersonModel.fullName
         publicURL = fromPersonModel.publicURL
@@ -187,7 +189,7 @@ final class FluentPersonModel: Model, @unchecked Sendable {
         profilePictureURL = fromPersonModel.profilePictureURL
         headerPictureURL = fromPersonModel.headerPictureURL
         bio = fromPersonModel.bio
-        createdAt = fromPersonModel.createdAt.formatted(.iso8601.locale(Locale(identifier: "en_US_POSIX")))
+        createdAt = RFC3339Timestamp(fromDate: fromPersonModel.createdAt)
         id = UUID(uuidString: fromPersonModel.id)
         serverDialect = fromPersonModel.serverDialect.rawValue
         following = fromPersonModel.following
@@ -207,9 +209,11 @@ final class FluentPersonModel: Model, @unchecked Sendable {
         if let sessionId {
             toModel.sessionId = sessionId
         }
-        if let sessionCreatedAt {
-            toModel.sessionCreatedAt = ISO8601DateFormatter().date(from: sessionCreatedAt)!
-        }
+        // if let sessionCreatedAt {
+        //     if !sessionCreatedAt.isEmpty {
+        //         toModel.sessionCreatedAt = ISO8601DateFormatter().date(from: sessionCreatedAt)!
+        //     }
+        // }
         toModel.publicURL = publicURL
         toModel.realURL = realURL
         toModel.profilePictureURL = profilePictureURL
@@ -228,6 +232,11 @@ final class FluentPersonModel: Model, @unchecked Sendable {
 
         return toModel
     }
+}
+
+public func AddPersonMigrations(fluent: Fluent) async {
+    await fluent.migrations.add(CreateFluentPerson())
+    await fluent.migrations.add(CreatePersonNameIndex())
 }
 
 public struct CreateFluentPerson: AsyncMigration {
@@ -264,4 +273,21 @@ public struct CreateFluentPerson: AsyncMigration {
     }
 
     public init() {}
+}
+
+public struct CreatePersonNameIndex: AsyncMigration {
+
+    public func prepare(on database: Database) async throws {
+        try await (database as! SQLDatabase)
+            .create(index: "name_idx")
+            .on("person")
+            .column("name")
+            .run()
+    }
+
+    public func revert(on database: Database) async throws {
+        try await (database as! SQLDatabase)
+            .drop(index: "name_idx")
+            .run()
+    }
 }

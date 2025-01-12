@@ -11,6 +11,15 @@ import Foundation
 import HummingbirdFluent
 import Storage
 
+public struct FluentStatusStorage: StatusStorage {
+
+    public func get(criteria: StatusCriteria) async -> Status? {
+
+        return nil
+    }
+
+}
+
 final class FluentStatusModel: Model, @unchecked Sendable {
     static let schema = "status"
 
@@ -121,6 +130,13 @@ public struct CreateFluentStatus: AsyncMigration {
     }
 
     public init() {}
+}
+
+public func AddStatusMigrations(fluent: Fluent) async {
+    await fluent.migrations.add(CreateFluentStatus())
+    await fluent.migrations.add(CreateStatusAccountIdIndex())
+    await fluent.migrations.add(CreateStatusConversationIdIndex())
+    await fluent.migrations.add(CreateStatusInReplyToIdIndex())
 }
 
 public struct CreateStatusAccountIdIndex: AsyncMigration {

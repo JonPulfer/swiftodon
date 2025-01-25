@@ -4,6 +4,7 @@ import Hummingbird
 import HummingbirdAuth
 import HummingbirdFluent
 import HummingbirdRouter
+import JWTKit
 import Logging
 import Mustache
 
@@ -63,6 +64,16 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
         context: WebAuthnRequestContext.self
     )
 
+    /// JWT set up
+    let keyCollection = JWTKeyCollection()
+    guard
+        let jwtSecret = ProcessInfo.processInfo.environment["JWT_SECRET"]
+    else {
+        logger.error("JWT_SECRET is not found in environment")
+        throw JWTError.generic(identifier: "JWTKeyCollection", reason: "JWT_SECRET missing from env")
+    }
+    await keyCollection.add(hmac: HMACKey.init(stringLiteral: jwtSecret), digestAlgorithm: .sha256)
+
     let router = RouterBuilder(context: WebAuthnRequestContext.self) {
         // logging middleware
         LogRequestsMiddleware(.info)
@@ -87,12 +98,22 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
                     )
                 ),
                 fluent: fluent,
-                webAuthnSessionAuthenticator: webAuthnSessionAuthenticator
+                webAuthnSessionAuthenticator: webAuthnSessionAuthenticator,
+                jwtKeyCollection: keyCollection
             )
-        }
 
-        RouteGroup("person") {
-            PersonController(repository: personRepos, webAuthnSessionAuthenticator: webAuthnSessionAuthenticator)
+            /// API tree based on the Mastodon API: https://docs.joinmastodon.org/dev/routes/#api
+            RouteGroup("v1") {
+                // RouteGroup("statuses") {
+                //     // StatusController
+                // }
+                RouteGroup("accounts") {
+                    PersonController(
+                        repository: personRepos,
+                        webAuthnSessionAuthenticator: webAuthnSessionAuthenticator
+                    )
+                }
+            }
         }
 
         Get("/health") { _, _ -> HTTPResponse.Status in

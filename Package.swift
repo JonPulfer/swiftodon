@@ -20,6 +20,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/webauthn-swift.git", from: "1.0.0-alpha.2"),
         .package(url: "https://github.com/hummingbird-project/swift-mustache.git", from: "2.0.0-beta.1"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0"),
     ],
     targets: [
         .executableTarget(
@@ -33,6 +34,7 @@ let package = Package(
                 .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
                 .product(name: "WebAuthn", package: "webauthn-swift"),
                 .product(name: "Mustache", package: "swift-mustache"),
+                .product(name: "JWTKit", package: "jwt-kit"),
                 "MastodonData",
                 "Storage",
             ],

@@ -1,4 +1,7 @@
 format:
 	swift format -ipr Sources/
 
-.PHONY: format
+test:
+	swift test --enable-code-coverage
+
+.PHONY: format test

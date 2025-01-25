@@ -1,4 +1,5 @@
 import Foundation
+import MastodonData
 
 public struct Status: Codable {
     var id: UUID?
@@ -24,6 +25,32 @@ public struct Status: Codable {
     var editedAt: String
     var trendable: Bool
     var orderedMediaAttachments: [String]
+
+    init(fromMastodonStatus: MastodonStatus) {
+        id = (UUID(uuidString: fromMastodonStatus.id) ?? UUID())
+        uri = fromMastodonStatus.uri
+        content = fromMastodonStatus.text
+        createdAt = fromMastodonStatus.createdAt
+        updatedAt = fromMastodonStatus.updatedAt
+        inReplyToId = fromMastodonStatus.inReplyToId
+        reblogOfId = fromMastodonStatus.reblogOfId
+        url = fromMastodonStatus.url
+        sensitive = fromMastodonStatus.sensitive
+        visibility = fromMastodonStatus.visibility
+        spoilerText = fromMastodonStatus.spoilerText
+        reply = fromMastodonStatus.reply
+        language = fromMastodonStatus.language
+        conversationId = fromMastodonStatus.conversationId
+        local = fromMastodonStatus.local
+        accountId = fromMastodonStatus.accountId
+        applicationId = fromMastodonStatus.applicationId
+        inReplyToAccountId = fromMastodonStatus.inReplyToAccountId
+        pollId = fromMastodonStatus.pollId
+        deletedAt = fromMastodonStatus.deletedAt
+        editedAt = fromMastodonStatus.editedAt
+        trendable = fromMastodonStatus.trendable
+        orderedMediaAttachments = fromMastodonStatus.orderedMediaAttachments
+    }
 }
 
 public struct StatusCriteria: Sendable {

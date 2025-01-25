@@ -40,8 +40,8 @@ public struct Person: Codable {
     public var featuredTags: String
     public var endpoints: PersonEndpoints
 
-    public func toMastodonAccount() -> Account {
-        Account(
+    public func toMastodonAccount() -> MastodonAccount {
+        MastodonAccount(
             id: id,
             username: name,
             account: name,
@@ -80,7 +80,7 @@ public struct Person: Codable {
         if id.isEmpty {
             throw PersonError.idMissing
         }
-        return UUID(uuidString: id)!
+        return (UUID(uuidString: id) ?? UUID())
     }
 
     var publicKeyCredentialUserEntity: PublicKeyCredentialUserEntity {
@@ -113,13 +113,9 @@ public struct PersonCriteria: Sendable {
     ///  - ``
     public var id: String?
 
-    public init(handle: String?, id: String?) {
-        if let handleSupplied = handle {
-            self.handle = handleSupplied
-        }
-        if let idSupplied = id {
-            self.id = idSupplied
-        }
+    public init(handle: String? = nil, id: String? = nil) {
+        self.handle = handle
+        self.id = id
     }
 }
 

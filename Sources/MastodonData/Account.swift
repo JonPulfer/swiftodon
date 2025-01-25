@@ -8,7 +8,7 @@ import Foundation
 import Hummingbird
 
 /// Account from a Mastodon instance.
-public struct Account: ResponseEncodable, Codable, Equatable {
+public struct MastodonAccount: ResponseEncodable, Codable, Equatable {
     var id: String
     var username: String
     var account: String

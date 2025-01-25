@@ -11,6 +11,7 @@ import Hummingbird
 import HummingbirdAuth
 import HummingbirdFluent
 import HummingbirdRouter
+import JWTKit
 @preconcurrency import WebAuthn
 
 struct WebAuthnController: RouterController, Sendable {
@@ -19,6 +20,7 @@ struct WebAuthnController: RouterController, Sendable {
     let webauthn: WebAuthnManager
     let fluent: Fluent
     let webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
+    let jwtKeyCollection: JWTKeyCollection
 
     // return RouteGroup with user login endpoints
     var body: some RouterMiddleware<Context> {
@@ -34,6 +36,9 @@ struct WebAuthnController: RouterController, Sendable {
                 Post("start", handler: beginRegistration)
                 Post("finish", handler: finishRegistration)
             }
+        }
+        RouteGroup("token") {
+            Get("refresh", handler: getToken)
         }
     }
 
@@ -143,6 +148,7 @@ struct WebAuthnController: RouterController, Sendable {
             .authenticated(userId: webAuthnCredential.fluentPersonModel.requireID()),
             expiresIn: .seconds(24 * 60 * 60)
         )
+
         return .ok
     }
 
@@ -150,6 +156,19 @@ struct WebAuthnController: RouterController, Sendable {
     @Sendable func logout(_: Request, context: Context) async throws -> HTTPResponse.Status {
         context.sessions.clearSession()
         return .ok
+    }
+
+    @Sendable func getToken(_: Request, context: Context) async throws -> TokenResponse {
+        let contextSession = try await context.sessions.session?.session(fluent: fluent)
+        switch contextSession {
+        case let .authenticated(user: user):
+            let userPayload: UserPayload = UserPayload(from: user.id)
+            let token = try await jwtKeyCollection.sign(userPayload)
+            let tokenResponse = TokenResponse(token: token, expiry: userPayload.expiration.value)
+            return tokenResponse
+        default:
+            throw HTTPError(.unauthorized)
+        }
     }
 }
 

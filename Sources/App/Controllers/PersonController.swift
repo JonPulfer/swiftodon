@@ -27,7 +27,7 @@ struct PersonController: RouterController {
         Get("/:id", handler: get)
     }
 
-    @Sendable func get(request _: Request, context: some RequestContext) async throws -> Account? {
+    @Sendable func get(request _: Request, context: some RequestContext) async throws -> MastodonAccount? {
         let id = try context.parameters.require("id", as: String.self)
         if case let personObject as Person = await repository.get(
             criteria: PersonCriteria(handle: id.replacingOccurrences(of: "@", with: ""), id: nil)

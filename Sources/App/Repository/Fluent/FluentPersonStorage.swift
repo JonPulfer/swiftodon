@@ -219,7 +219,7 @@ final class FluentPersonModel: Model, @unchecked Sendable {
         toModel.profilePictureURL = profilePictureURL
         toModel.headerPictureURL = headerPictureURL
         toModel.bio = bio
-        toModel.createdAt = ISO8601DateFormatter().date(from: createdAt)!
+        toModel.createdAt = ParseRFCTimestampToUTC(fromString: createdAt)
         toModel.type = type
         toModel.serverDialect = ServerDialect(fromString: serverDialect)
         toModel.following = following

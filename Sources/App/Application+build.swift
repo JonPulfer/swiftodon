@@ -99,7 +99,8 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
                 ),
                 fluent: fluent,
                 webAuthnSessionAuthenticator: webAuthnSessionAuthenticator,
-                jwtKeyCollection: keyCollection
+                jwtKeyCollection: keyCollection,
+                logger: logger
             )
 
             /// API tree based on the Mastodon API: https://docs.joinmastodon.org/dev/routes/#api
@@ -110,7 +111,10 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
                 RouteGroup("accounts") {
                     PersonController(
                         repository: personRepos,
-                        webAuthnSessionAuthenticator: webAuthnSessionAuthenticator
+                        fluent: fluent,
+                        webAuthnSessionAuthenticator: webAuthnSessionAuthenticator,
+                        jwtKeyCollection: keyCollection,
+                        logger: logger
                     )
                 }
             }

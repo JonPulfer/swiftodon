@@ -21,6 +21,7 @@ struct WebAuthnController: RouterController, Sendable {
     let fluent: Fluent
     let webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
     let jwtKeyCollection: JWTKeyCollection
+    let logger: Logger
 
     // return RouteGroup with user login endpoints
     var body: some RouterMiddleware<Context> {
@@ -38,6 +39,9 @@ struct WebAuthnController: RouterController, Sendable {
             }
         }
         RouteGroup("token") {
+            webAuthnSessionAuthenticator
+            JWTAuth(jwtKeyCollection: jwtKeyCollection, logger: logger, fluent: fluent)
+            RedirectMiddleware(to: "/login.html")
             Get("refresh", handler: getToken)
         }
     }

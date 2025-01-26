@@ -16,6 +16,7 @@ infrastructure services such as object storage.
 My loose plan is to build out the features that I use so that I can run my own server.
 
  - [x] WebAuthN -> Register account
+ - [x] JWT authenticated /api/v1 access control
  - [ ] home timeline
  - [ ] follow
  - [ ] boost

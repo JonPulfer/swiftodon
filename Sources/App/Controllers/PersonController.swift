@@ -20,15 +20,9 @@ struct PersonController: RouterController {
 
     let controllerPath: String = "https://somewhere.com/person/"
 
-    let webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
-    let jwtKeyCollection: JWTKeyCollection
     let logger: Logger
 
     var body: some RouterMiddleware<Context> {
-        // Session middleware to control access to all endpoints in this controller
-        webAuthnSessionAuthenticator
-        JWTAuth(jwtKeyCollection: jwtKeyCollection, logger: logger, fluent: fluent)
-        RedirectMiddleware(to: "/login.html")
 
         // Endpoints
         Get("/:id", handler: get)

@@ -105,6 +105,11 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 
             /// API tree based on the Mastodon API: https://docs.joinmastodon.org/dev/routes/#api
             RouteGroup("v1") {
+                // Auth middleware to control access to all endpoints at /api/v1/
+                webAuthnSessionAuthenticator
+                JWTAuth(jwtKeyCollection: keyCollection, logger: logger, fluent: fluent)
+                RedirectMiddleware(to: "/login.html")
+
                 // RouteGroup("statuses") {
                 //     // StatusController
                 // }
@@ -112,8 +117,6 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
                     PersonController(
                         repository: personRepos,
                         fluent: fluent,
-                        webAuthnSessionAuthenticator: webAuthnSessionAuthenticator,
-                        jwtKeyCollection: keyCollection,
                         logger: logger
                     )
                 }

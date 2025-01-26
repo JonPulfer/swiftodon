@@ -1,13 +1,22 @@
+@contentType = application/json
+
+
 ### POST - create a new status
-POST http://localhost:8080/api/v1/status
+# @prompt authToken
+POST http://localhost:8080/api/v1/statuses
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
 
 ### GET - new token
+# @prompt authToken
 GET http://localhost:8080/api/token/refresh
-Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Mzc4Mjk5NDguODY4MzgzLCJ1c2VyX2lkIjoiRjBERkVCQjMtM0FBMS00REFCLUJENDgtNUE2RTdDNjQ0Mjg3In0.ACO4ydeRBHChwuhBn4v5pGqDMQv6jRIY1Itz19BMQBY
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
 
 
 ### GET - person
+# @prompt authToken
 GET http://localhost:8080/api/v1/accounts/@someone44
-Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Mzc4ODY2OTkuOTk0NDUxLCJ1c2VyX2lkIjoiRjBERkVCQjMtM0FBMS00REFCLUJENDgtNUE2RTdDNjQ0Mjg3In0.znDLAJE3G-L1R3CDyCE8xnycOpeXcmQm0R8hdcft7TY
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}

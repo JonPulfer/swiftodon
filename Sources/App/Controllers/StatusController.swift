@@ -5,26 +5,23 @@
 //  Created by Jonathan Pulfer on 10/01/2025.
 //
 import Hummingbird
-import HummingbirdAuth
 import HummingbirdRouter
+import Logging
 import MastodonData
 
 struct StatusController: RouterController {
     typealias Context = WebAuthnRequestContext
 
     let repository: StatusStorage
-
-    let webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
+    let logger: Logger
 
     var body: some RouterMiddleware<Context> {
-        // Session middleware to control access to all endpoints in this controller
-        webAuthnSessionAuthenticator
-        RedirectMiddleware(to: "/login.html")
 
         // Endpoints
 
-        // POST /api/v1/statuses
-        // Create a new status, returns the created status
+        /// POST /api/v1/statuses
+        /// Create a new status, returns the created status
+        Post("/", handler: create)
 
         // GET /api/v1/statuses/:id
         // Returns an individual status

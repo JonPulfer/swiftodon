@@ -22,7 +22,6 @@ My loose plan is to build out the features that I use so that I can run my own s
  - [ ] boost
  - [ ] reply
  - [ ] media stored on S3 or similar
- - [ ] application credentials 
  - [ ] registration verification via email
  - [ ] follow hashtags
  - [ ] search users

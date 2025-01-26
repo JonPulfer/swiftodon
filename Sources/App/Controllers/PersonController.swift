@@ -5,10 +5,8 @@
 //  Created by Jonathan Pulfer on 28/09/2024.
 //
 import Hummingbird
-import HummingbirdAuth
 import HummingbirdFluent
 import HummingbirdRouter
-import JWTKit
 import Logging
 import MastodonData
 
@@ -18,16 +16,19 @@ struct PersonController: RouterController {
     let repository: any PersonStorage
     let fluent: Fluent
 
-    let controllerPath: String = "https://somewhere.com/person/"
-
     let logger: Logger
 
     var body: some RouterMiddleware<Context> {
 
         // Endpoints
+
+        /// GET /api/v1/accounts/:id
+        ///
         Get("/:id", handler: get)
     }
+}
 
+extension PersonController {
     @Sendable func get(request _: Request, context: some RequestContext) async throws -> MastodonAccount? {
         let id = try context.parameters.require("id", as: String.self)
         if case let personObject as Person = await repository.get(

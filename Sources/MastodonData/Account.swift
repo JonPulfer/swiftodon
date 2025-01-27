@@ -16,12 +16,12 @@ public struct MastodonAccount: ResponseEncodable, Codable, Equatable {
     var locked: Bool
     var bot: Bool
     var discoverable: Bool
-    var indexable: Bool
+    var indexable: Bool?
     var group: Bool
     var createdAt: String
     var note: String
-    var url: String
-    var uri: String
+    var url: String?
+    var uri: String?
     var avatar: String
     var avatarStatic: String
     var header: String
@@ -30,9 +30,36 @@ public struct MastodonAccount: ResponseEncodable, Codable, Equatable {
     var followingCount: UInt64
     var statusesCount: UInt64
     var lastStatusAt: String
-    var hideCollections: Bool
-    var noindex: Bool
+    var hideCollections: Bool?
+    var noindex: Bool?
     var fields: [AccountField]
+
+    public enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case username = "username"
+        case account = "acct"
+        case displayName = "display_name"
+        case locked = "locked"
+        case bot = "bot"
+        case discoverable = "discoverable"
+        case indexable = "indexable"
+        case group = "group"
+        case createdAt = "created_at"
+        case note = "note"
+        case url = "url"
+        case uri = "uri"
+        case avatar = "avatar"
+        case avatarStatic = "avatar_static"
+        case header = "header"
+        case headerStatic = "header_static"
+        case followersCount = "followers_count"
+        case followingCount = "following_count"
+        case statusesCount = "statuses_count"
+        case lastStatusAt = "last_status_at"
+        case hideCollections = "hide_collections"
+        case noindex = "no_index"
+        case fields = "fields"
+    }
 
     public init(
         id: String,
@@ -87,10 +114,20 @@ public struct MastodonAccount: ResponseEncodable, Codable, Equatable {
 
 struct PersonEndpoints: ResponseEncodable, Codable, Equatable {
     var sharedInbox: String
+
+    public enum CodingKeys: String, CodingKey {
+        case sharedInbox = "shared_inbox"
+    }
 }
 
 public struct AccountField: ResponseEncodable, Codable, Equatable {
     var name: String
     var value: String
-    var verifiedAt: String
+    var verifiedAt: String?
+
+    public enum CodingKeys: String, CodingKey {
+        case name = "name"
+        case value = "value"
+        case verifiedAt = "verified_at"
+    }
 }

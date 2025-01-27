@@ -57,6 +57,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
     let library = try await MustacheLibrary(directory: Bundle.module.resourcePath!)
 
     let personRepos = FluentPersonStorage(fluent: fluent)
+    let statusRepos = FluentStatusStorage(fluent: fluent, logger: logger)
 
     /// Authenticator storing the user
     let webAuthnSessionAuthenticator = SessionAuthenticator(
@@ -110,9 +111,9 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
                 JWTAuth(jwtKeyCollection: keyCollection, logger: logger, fluent: fluent)
                 RedirectMiddleware(to: "/login.html")
 
-                // RouteGroup("statuses") {
-                //     // StatusController
-                // }
+                RouteGroup("statuses") {
+                    StatusController(repository: statusRepos, fluent: fluent, logger: logger)
+                }
                 RouteGroup("accounts") {
                     PersonController(
                         repository: personRepos,
@@ -127,6 +128,9 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
             return .ok
         }
     }
+
+    let snakeCaseDecoder = JSONDecoder()
+    snakeCaseDecoder.keyDecodingStrategy = .convertFromSnakeCase
 
     var app = Application(
         router: router,

@@ -9,9 +9,13 @@ import FluentKit
 import FluentSQLiteDriver
 import Foundation
 import HummingbirdFluent
+import Logging
 import Storage
 
 public struct FluentStatusStorage: StatusStorage {
+
+    let fluent: Fluent
+    let logger: Logger
 
     public func get(criteria: StatusCriteria) async -> Status? {
 
@@ -36,13 +40,13 @@ final class FluentStatusModel: Model, @unchecked Sendable {
     var createdAt: String
 
     @Field(key: "updated_at")
-    var updatedAt: String
+    var updatedAt: String?
 
     @Field(key: "in_reply_to_id")
-    var inReplyToId: String
+    var inReplyToId: String?
 
     @Field(key: "reblog_of_id")
-    var reblogOfId: String
+    var reblogOfId: String?
 
     @Field(key: "url")
     var url: String
@@ -54,7 +58,7 @@ final class FluentStatusModel: Model, @unchecked Sendable {
     var visibility: String
 
     @Field(key: "spoiler_text")
-    var spoilerText: String
+    var spoilerText: String?
 
     @Field(key: "reply")
     var reply: Bool
@@ -63,36 +67,62 @@ final class FluentStatusModel: Model, @unchecked Sendable {
     var language: String
 
     @Field(key: "conversation_id")
-    var conversationId: String
+    var conversationId: String?
 
     @Field(key: "local")
     var local: Bool
 
     @Field(key: "account_id")
-    var accountId: String
+    var accountId: String?
 
     @Field(key: "application_id")
-    var applicationId: String
+    var applicationId: String?
 
     @Field(key: "in_reply_to_account_id")
-    var inReplyToAccountId: String
+    var inReplyToAccountId: String?
 
     @Field(key: "poll_id")
-    var pollId: String
+    var pollId: String?
 
     @Field(key: "deleted_at")
-    var deletedAt: String
+    var deletedAt: String?
 
     @Field(key: "edited_at")
-    var editedAt: String
+    var editedAt: String?
 
     @Field(key: "trendable")
-    var trendable: Bool
+    var trendable: Bool?
 
     @Field(key: "ordered_media_attachments")
     var orderedMediaAttachments: [String]
 
     public init() {}
+
+    public init(from status: Status) {
+        self.id = (status.id ?? UUID())
+        self.uri = status.uri
+        self.content = status.content
+        self.createdAt = status.createdAt
+        self.updatedAt = status.updatedAt
+        self.inReplyToId = status.inReplyToId
+        self.reblogOfId = status.reblogOfId
+        self.url = status.url
+        self.sensitive = status.sensitive
+        self.visibility = status.visibility
+        self.spoilerText = status.spoilerText
+        self.reply = status.reply
+        self.language = status.language
+        self.conversationId = status.conversationId
+        self.local = status.local
+        self.accountId = status.accountId
+        self.applicationId = status.applicationId
+        self.inReplyToAccountId = status.inReplyToAccountId
+        self.pollId = status.pollId
+        self.deletedAt = status.deletedAt
+        self.editedAt = status.editedAt
+        self.trendable = status.trendable
+        self.orderedMediaAttachments = status.orderedMediaAttachments
+    }
 }
 
 public struct CreateFluentStatus: AsyncMigration {

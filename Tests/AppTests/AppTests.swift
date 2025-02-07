@@ -18,8 +18,13 @@ import Testing
         let logLevel: Logger.Level? = .trace
     }
 
+    var app: any ApplicationProtocol
+
+    init() async throws {
+        self.app = try await buildApplication(TestAppArguments())
+    }
+
     @Test func testAppBuilds() async throws {
-        let app = try await buildApplication(TestAppArguments())
         try await app.test(.router) { client in
             try await client.execute(uri: "/health", method: .get) { response in
                 #expect(response.status == .ok)
@@ -39,8 +44,13 @@ import Testing
         let logLevel: Logger.Level? = .trace
     }
 
+    var app: any ApplicationProtocol
+
+    init() async throws {
+        self.app = try await buildApplication(TestAppArguments())
+    }
+
     @Test func testPersonCreate() async throws {
-        let app = try await buildApplication(TestAppArguments())
         try await app.test(.live) { client in
             let personRepos = FluentPersonStorage(fluent: app.services[0] as! Fluent)
             if let person = try personRepos.create(from: CreatePerson(name: "testperson", fullName: "a test")) {
@@ -50,7 +60,6 @@ import Testing
     }
 
     @Test func testPersonGet() async throws {
-        let app = try await buildApplication(TestAppArguments())
         try await app.test(.live) { client in
             let personRepos = FluentPersonStorage(fluent: app.services[0] as! Fluent)
             let person = try personRepos.create(from: CreatePerson(name: "testperson", fullName: "a test"))!

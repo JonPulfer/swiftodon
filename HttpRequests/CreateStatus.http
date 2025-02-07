@@ -1,9 +1,10 @@
 @contentType = application/json
+@baseUrl = http://localhost:8080
 
 
 ### POST - create a new status
 # @prompt authToken
-POST http://localhost:8080/api/v1/statuses
+POST {{baseUrl}}/api/v1/statuses
 Content-Type: {{contentType}}
 Authorization: Bearer {{authToken}}
 
@@ -90,13 +91,13 @@ Authorization: Bearer {{authToken}}
 
 ### GET - new token
 # @prompt authToken
-GET http://localhost:8080/api/token/refresh
+GET {{baseUrl}}/api/token/refresh
 Content-Type: {{contentType}}
 Authorization: Bearer {{authToken}}
 
 
 ### GET - person
 # @prompt authToken
-GET http://localhost:8080/api/v1/accounts/@someone44
+GET {{baseUrl}}/api/v1/accounts/@someone44
 Content-Type: {{contentType}}
 Authorization: Bearer {{authToken}}

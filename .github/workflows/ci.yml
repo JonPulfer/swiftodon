@@ -13,6 +13,8 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: 'some test value'
     strategy:
       matrix:
         image:

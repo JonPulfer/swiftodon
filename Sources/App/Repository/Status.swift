@@ -59,4 +59,5 @@ public struct StatusCriteria: Sendable {
 
 public protocol StatusStorage: Sendable {
     func get(criteria: StatusCriteria) async -> Status?
+    func create(from status: Status) async throws
 }

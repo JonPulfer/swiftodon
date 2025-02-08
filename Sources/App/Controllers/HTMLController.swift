@@ -7,7 +7,6 @@
 
 import Hummingbird
 import HummingbirdAuth
-import HummingbirdFluent
 import HummingbirdRouter
 import Mustache
 
@@ -32,12 +31,10 @@ struct HTMLController: RouterController {
     typealias Context = WebAuthnRequestContext
 
     let homeTemplate: MustacheTemplate
-    let fluent: Fluent
     let webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
 
     init(
         mustacheLibrary: MustacheLibrary,
-        fluent: Fluent,
         webAuthnSessionAuthenticator: SessionAuthenticator<Context, FluentPersonStorage>
     ) {
         // get the mustache templates from the library
@@ -46,7 +43,6 @@ struct HTMLController: RouterController {
             preconditionFailure("Failed to load mustache templates")
         }
         self.homeTemplate = homeTemplate
-        self.fluent = fluent
         self.webAuthnSessionAuthenticator = webAuthnSessionAuthenticator
     }
 

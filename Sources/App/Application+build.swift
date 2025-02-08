@@ -53,11 +53,12 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
     await AddStatusMigrations(fluent: fluent)
     try await fluent.migrate()
 
-    // load mustache template library
-    let library = try await MustacheLibrary(directory: Bundle.module.resourcePath!)
-
+    /// repository set up to inject the storage provider.
     let personRepos = FluentPersonStorage(fluent: fluent)
     let statusRepos = FluentStatusStorage(fluent: fluent, logger: logger)
+
+    // load mustache template library
+    let library = try await MustacheLibrary(directory: Bundle.module.resourcePath!)
 
     /// Authenticator storing the user
     let webAuthnSessionAuthenticator = SessionAuthenticator(
@@ -85,7 +86,6 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 
         HTMLController(
             mustacheLibrary: library,
-            fluent: fluent,
             webAuthnSessionAuthenticator: webAuthnSessionAuthenticator
         )
 
@@ -112,14 +112,10 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
                 RedirectMiddleware(to: "/login.html")
 
                 RouteGroup("statuses") {
-                    StatusController(repository: statusRepos, fluent: fluent, logger: logger)
+                    StatusController(repository: statusRepos, logger: logger)
                 }
                 RouteGroup("accounts") {
-                    PersonController(
-                        repository: personRepos,
-                        fluent: fluent,
-                        logger: logger
-                    )
+                    PersonController(repository: personRepos, logger: logger)
                 }
             }
         }
@@ -128,9 +124,6 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
             return .ok
         }
     }
-
-    let snakeCaseDecoder = JSONDecoder()
-    snakeCaseDecoder.keyDecodingStrategy = .convertFromSnakeCase
 
     var app = Application(
         router: router,

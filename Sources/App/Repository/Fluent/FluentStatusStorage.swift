@@ -22,6 +22,11 @@ public struct FluentStatusStorage: StatusStorage {
         return nil
     }
 
+    public func create(from status: Status) async throws {
+        let dbModel = FluentStatusModel(from: status)
+        try await dbModel.save(on: fluent.db())
+    }
+
 }
 
 final class FluentStatusModel: Model, @unchecked Sendable {

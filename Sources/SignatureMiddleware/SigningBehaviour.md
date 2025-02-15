@@ -11,8 +11,7 @@ sequenceDiagram
     participant FollowersInbox
     Person->>Mastodon: create new status
     Mastodon->>FollowersServer: signed request publishing new status
-    FollowersServer->>Mastodon: fetch Person to get their public key and verify signature
-    Mastodon->>FollowersServer: respond with the public key
+    FollowersServer->>Mastodon: fetch key using keyId url and verify signature
     FollowersServer->> FollowersInbox: status is stored if the signature is valid
 ```
 
@@ -28,5 +27,8 @@ Signature: keyId="https://my.example.com/actor#main-key",headers="(request-targe
 The three parts in this signature are:-
  * keyId - URL to the public key of the Person
  * headers - The headers used as source data for the signature
- * signature - The signature computed using the private key of the Person
+ * signature - SH256 hash of the headers which is signed using the private key of the Person and then base64 encoded
+
+For POST requests, an additional header is added which is a SHA256 of the request body. This is stored in `Digest` 
+header which is then included in the signature.
 

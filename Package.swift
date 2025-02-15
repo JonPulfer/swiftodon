@@ -21,6 +21,7 @@ let package = Package(
         .package(url: "https://github.com/hummingbird-project/swift-mustache.git", from: "2.0.0-beta.1"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0"),
+        .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0"..<"4.0.0"),
     ],
     targets: [
         .executableTarget(
@@ -66,6 +67,7 @@ let package = Package(
             name: "SignatureMiddlewareTests",
             dependencies: [
                 // .byName(name: "KeyStorage")
+                .product(name: "Crypto", package: "swift-crypto"),
             ],
             path: "Tests/SignatureMiddleware"
         ),

@@ -7,10 +7,11 @@
 
 import Crypto
 import Foundation
+import SwiftASN1
 import Testing
 
 @Suite struct KeyTests {
-    
+
     // Valid Curve25519 key details verified by openssl.
     let privateKeyBase64 = "sffPc3mtiJDKdGkN7TiascPiMeXm7UZqfXdBlYG7iyc="
     let expectedPublicKeyPem =
@@ -20,6 +21,13 @@ import Testing
         let keyData = Data(base64Encoded: privateKeyBase64)!
         let privateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: keyData)
         #expect(privateKey.publicKey.exportAsPem() == expectedPublicKeyPem)
+    }
+
+    @Test func TestPEMDecoding() throws {
+        let pemDoc = try PEMDocument.init(pemString: self.expectedPublicKeyPem)
+        print("length of derBytes: \(pemDoc.derBytes.count)")
+        let ecKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: pemDoc.derBytes[12...])
+        print("ecKey: \(ecKey)")
     }
 }
 

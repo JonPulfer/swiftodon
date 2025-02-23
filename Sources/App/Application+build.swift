@@ -79,7 +79,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
     let router = RouterBuilder(context: WebAuthnRequestContext.self) {
         // logging middleware
         LogRequestsMiddleware(.info)
-        // add file middleware to server HTML files
+        // add file middleware to serve HTML files
         FileMiddleware(searchForIndexHtml: true, logger: logger)
         // session middleware
         SessionMiddleware(storage: persist)
@@ -88,6 +88,10 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
             mustacheLibrary: library,
             webAuthnSessionAuthenticator: webAuthnSessionAuthenticator
         )
+
+        RouteGroup("wellknown") {
+            WellKnownController()
+        }
 
         RouteGroup("api") {
             WebAuthnController(

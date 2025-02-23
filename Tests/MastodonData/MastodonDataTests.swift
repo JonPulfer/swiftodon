@@ -11,18 +11,18 @@ import Testing
 
 @Suite struct TestDecoding {
     let webFingerExample: String = """
-     {
+         {
 
-       "subject": "acct:bugle@bugle.lol",
-       "links": [
-    	 {
-    	   "rel": "self",
-    	   "type": "application/activity+json",
-    	   "href": "https://bugle.lol/@bugle"
-    	 }
-       ]
-     }
-    """
+           "subject": "acct:bugle@bugle.lol",
+           "links": [
+        	 {
+        	   "rel": "self",
+        	   "type": "application/activity+json",
+        	   "href": "https://bugle.lol/@bugle"
+        	 }
+           ]
+         }
+        """
 
     @Test func TestDecodingWebFingerExample() {
         let jsonData = webFingerExample.data(using: .utf8)!
@@ -43,7 +43,7 @@ import Testing
         let encodeObject = WebFinger(
             subject: "acct:bugle@bugle.lol",
             links: [
-                Link(rel: "self", type: "application/activity+json", href: "https://bugle.lol/@bugle"),
+                Link(rel: "self", type: "application/activity+json", href: "https://bugle.lol/@bugle")
             ]
         )
         let encoder = JSONEncoder()
@@ -59,5 +59,12 @@ import Testing
             #expect(decodedObject.links[0].type == encodeObject.links[0].type)
             #expect(decodedObject.links[0].href == encodeObject.links[0].href)
         } catch {}
+    }
+}
+
+@Suite struct TestWebFinger {
+    @Test func TestInitWithValidData() throws {
+        let webFinger = try WebFinger(acctValue: "acct:someone@host.com", hostname: "https://host.com")
+        #expect(webFinger.links[0].href == "https://host.com/users/someone")
     }
 }

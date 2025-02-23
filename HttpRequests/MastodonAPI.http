@@ -1,0 +1,10 @@
+@contentType = application/avtivity+json
+@baseUrl = https://mstdn.social
+
+###
+GET {{baseUrl}}/api/v1/accounts/108274
+Content-Type: {{contentType}}
+
+###
+GET {{baseUrl}}/users/JonathanPulfer
+Content-Type: {{contentType}}

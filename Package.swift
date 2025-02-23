@@ -22,6 +22,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0"..<"4.0.0"),
+        .package(url: "https://github.com/apple/swift-asn1.git", .upToNextMajor(from: "1.0.0")),
     ],
     targets: [
         .executableTarget(
@@ -36,15 +37,20 @@ let package = Package(
                 .product(name: "WebAuthn", package: "webauthn-swift"),
                 .product(name: "Mustache", package: "swift-mustache"),
                 .product(name: "JWTKit", package: "jwt-kit"),
+                .product(name: "SwiftASN1", package: "swift-asn1"),
                 "MastodonData",
                 "Storage",
             ],
             path: "Sources/App",
             resources: [.process("Resources")]
         ),
-        .target(name: "MastodonData", dependencies: [
-            .product(name: "Hummingbird", package: "hummingbird"),
-        ], path: "Sources/MastodonData"),
+        .target(
+            name: "MastodonData",
+            dependencies: [
+                .product(name: "Hummingbird", package: "hummingbird")
+            ],
+            path: "Sources/MastodonData"
+        ),
         // .target(name: "KeyStorage", dependencies: []),
         .target(name: "Storage", dependencies: [], path: "Sources/Storage"),
         .testTarget(
@@ -68,6 +74,7 @@ let package = Package(
             dependencies: [
                 // .byName(name: "KeyStorage")
                 .product(name: "Crypto", package: "swift-crypto"),
+                .product(name: "SwiftASN1", package: "swift-asn1"),
             ],
             path: "Tests/SignatureMiddleware"
         ),

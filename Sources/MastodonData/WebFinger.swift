@@ -35,7 +35,11 @@ public struct WebFinger: ResponseEncodable, Codable, Equatable {
         }
         if let accountName = extractAccountNameFromAcctValue(acctValue: acctValue) {
             self.links = [
-                Link(rel: "self", type: "application/activity+json", href: host + "/users/" + accountName)
+                Link(
+                    rel: "self",
+                    type: "application/activity+json",
+                    href: "https://" + host + "/accounts/" + accountName
+                )
             ]
         }
     }

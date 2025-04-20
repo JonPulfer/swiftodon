@@ -4,6 +4,8 @@
 //
 //  Created by Jonathan Pulfer on 27/12/2024.
 //
+
+import Foundation
 import Hummingbird
 import HummingbirdAuth
 import HummingbirdRouter
@@ -17,6 +19,13 @@ public struct WebAuthnRequestContext: AuthRequestContext, RouterRequestContext, 
     public var identity: Person?
     public var routerContext: RouterBuilderContext
     public let sessions: SessionContext<WebAuthnSession>
+
+    var responseEncoder: ResponseEncoder {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .withoutEscapingSlashes
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }
 
     public init(source: Source) {
         coreContext = .init(source: source)

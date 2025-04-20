@@ -83,23 +83,28 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
         FileMiddleware(searchForIndexHtml: true, logger: logger)
         // session middleware
         SessionMiddleware(storage: persist)
+        RequestLoggerMiddleware()
 
         HTMLController(
             mustacheLibrary: library,
             webAuthnSessionAuthenticator: webAuthnSessionAuthenticator
         )
 
-        RouteGroup("wellknown") {
+        RouteGroup(".well-known") {
             WellKnownController()
+        }
+
+        RouteGroup("accounts") {
+            PersonController(repository: personRepos, logger: logger)
         }
 
         RouteGroup("api") {
             WebAuthnController(
                 webauthn: .init(
                     config: .init(
-                        relyingPartyID: "localhost",
+                        relyingPartyID: serverName(),
                         relyingPartyName: "swiftodon",
-                        relyingPartyOrigin: "http://localhost:8080"
+                        relyingPartyOrigin: serverURL()
                     )
                 ),
                 fluent: fluent,
@@ -118,9 +123,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
                 RouteGroup("statuses") {
                     StatusController(repository: statusRepos, logger: logger)
                 }
-                RouteGroup("accounts") {
-                    PersonController(repository: personRepos, logger: logger)
-                }
+
             }
         }
 

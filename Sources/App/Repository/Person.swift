@@ -9,9 +9,8 @@ import MastodonData
 import Storage
 @preconcurrency import WebAuthn
 
-let serverBaseURL: String = "https://somewhere.com"
-let personBaseURL: String = serverBaseURL + "/person/"
-let sharedInboxURL: String = serverBaseURL + "/shared/inbox"
+let personBaseURL: String = serverURL() + "/accounts/"
+let sharedInboxURL: String = serverURL() + "/shared/inbox"
 let personType: String = "Person"
 
 enum PersonError: Error {
@@ -63,7 +62,7 @@ public struct Person: Codable {
         type = personType
         self.name = name
         self.fullName = fullName
-        publicURL = serverBaseURL + "/" + handle
+        publicURL = serverURL() + "/" + handle
         realURL = uri
         createdAt = Date()
         serverDialect = .mastodon

@@ -16,10 +16,10 @@ struct WellKnownController: RouterController {
 
     var body: some RouterMiddleware<Context> {
 
-        Get(".webfinger", handler: webfinger)
+        Get("webfinger", handler: webfinger)
     }
 
-    @Sendable func webfinger(request: Request, context: some RequestContext) async throws -> WebFinger? {
+    @Sendable func webfinger(request: Request, context: WebAuthnRequestContext) async throws -> WebFinger? {
         let providedHostname = ProcessInfo.processInfo.environment["SWIFTODON_HOSTNAME"]
         let hostname = (providedHostname ?? "http://localhost:8080")
 

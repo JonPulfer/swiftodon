@@ -1,6 +1,7 @@
 import ArgumentParser
 import Hummingbird
 import Logging
+import Foundation
 
 @main
 struct App: AsyncParsableCommand, AppArguments {
@@ -31,3 +32,17 @@ extension Logger.Level: @retroactive ExpressibleByArgument {}
 #else
 extension Logger.Level: ExpressibleByArgument {}
 #endif
+
+public func serverURL() -> String {
+    if let envServerName = ProcessInfo.processInfo.environment["SWIFTODON_HOSTNAME"] {
+        return "https://" + envServerName
+    }
+    return "http://localhost:8080"
+}
+
+public func serverName() -> String {
+    if let envServerName = ProcessInfo.processInfo.environment["SWIFTODON_HOSTNAME"] {
+        return envServerName
+    }
+    return "localhost"
+}

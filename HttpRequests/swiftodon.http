@@ -2,5 +2,8 @@
 @baseUrl = http://localhost:8080
 
 ###
-GET {{baseUrl}}/accounts/someone55
+GET {{baseUrl}}/accounts/someone77
 Content-Type: {{contentType}}
+
+###
+GET {{baseUrl}}/.well-known/webfinger?resource=acct:someone77@leopard-generous-tadpole.ngrok-free.app

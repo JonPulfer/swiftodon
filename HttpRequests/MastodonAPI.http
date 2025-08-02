@@ -8,3 +8,6 @@ Content-Type: {{contentType}}
 ###
 GET {{baseUrl}}/users/JonathanPulfer
 Content-Type: {{contentType}}
+
+###
+GET {{baseUrl}}/.well-known/webfinger?resource=acct:JonathanPulfer@mstdn.social

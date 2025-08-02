@@ -5,6 +5,8 @@
 
 # swiftodon
 
+[![Go to the documentation](https://gist.github.com/cxmeel/0dbc95191f239b631c3874f4ccf114e2/raw/documentation.svg)](https://jonpulfer.github.io/swiftodon/documentation/app/)
+
 ## ActivityPub server
 This is an [ActivityPub](https://www.w3.org/TR/activitypub/#social-web-working-group) server that is capable of federating with 
 services such as [Mastodon](https://mastodon.social/about). [Documentation for Mastodon](https://docs.joinmastodon.org)

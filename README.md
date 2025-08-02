@@ -5,7 +5,9 @@
 
 # swiftodon
 
-[<img src="https://gist.github.com/cxmeel/0dbc95191f239b631c3874f4ccf114e2/raw/documentation.svg" alt="Go to the documentation" height="32" />](https://jonpulfer.github.io/swiftodon/documentation/app/)
+<a href="https://jonpulfer.github.io/swiftodon/documentation/app/">
+  <img src="https://img.shields.io/badge/documentation-blue" alt="Go to the documentation" height="32" />
+</a>
 
 ## ActivityPub server
 This is an [ActivityPub](https://www.w3.org/TR/activitypub/#social-web-working-group) server that is capable of federating with 

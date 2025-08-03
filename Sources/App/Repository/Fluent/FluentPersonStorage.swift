@@ -66,7 +66,7 @@ public struct FluentPersonStorage: PersonStorage, UserSessionRepository {
         return nil
     }
 
-    /// Create a new ``PersonModel`` in the datastore
+    /// Create a new ``Person`` in the datastore
     ///
     ///  - Parameters:
     ///    - from: ``CreatePerson`` holding the shortId to create the ``Person`` for.

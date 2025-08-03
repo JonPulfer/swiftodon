@@ -118,7 +118,7 @@ public struct PersonCriteria: Sendable {
     }
 }
 
-/// Request parameters to create a new ``PersonModel`` in the datastore.
+/// Request parameters to create a new ``Person`` in the datastore.
 public struct CreatePerson: Sendable {
     /// This is the name the person wants to create on this server.
     ///

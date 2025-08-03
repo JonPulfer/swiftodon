@@ -44,6 +44,9 @@ final class FluentStatusModel: Model, @unchecked Sendable {
     @Field(key: "created_at")
     var createdAt: String
 
+    @Field(key: "created_at_seconds_since_epoch")
+    var createdAtSecondsSinceEpoch: TimeInterval
+
     @Field(key: "updated_at")
     var updatedAt: String?
 
@@ -108,6 +111,7 @@ final class FluentStatusModel: Model, @unchecked Sendable {
         self.uri = status.uri
         self.content = status.content
         self.createdAt = status.createdAt
+        self.createdAtSecondsSinceEpoch = ParseRFCTimestampToUTC(fromString: status.createdAt).timeIntervalSince1970
         self.updatedAt = status.updatedAt
         self.inReplyToId = status.inReplyToId
         self.reblogOfId = status.reblogOfId
@@ -172,6 +176,7 @@ public func AddStatusMigrations(fluent: Fluent) async {
     await fluent.migrations.add(CreateStatusAccountIdIndex())
     await fluent.migrations.add(CreateStatusConversationIdIndex())
     await fluent.migrations.add(CreateStatusInReplyToIdIndex())
+    await fluent.migrations.add(AddCreatedAtSecondsSinceEpoch())
 }
 
 public struct CreateStatusAccountIdIndex: AsyncMigration {
@@ -222,5 +227,20 @@ public struct CreateStatusInReplyToIdIndex: AsyncMigration {
         try await (database as! SQLDatabase)
             .drop(index: "in_reply_to_id_idx")
             .run()
+    }
+}
+
+public struct AddCreatedAtSecondsSinceEpoch: AsyncMigration {
+
+    public func prepare(on database: Database) async throws {
+        try await database.schema("status")
+            .field("created_at_seconds_since_epoch", .double)
+            .update()
+    }
+
+    public func revert(on database: Database) async throws {
+        try await database.schema("status")
+            .deleteField("created_at_seconds_since_epoch")
+            .update()
     }
 }

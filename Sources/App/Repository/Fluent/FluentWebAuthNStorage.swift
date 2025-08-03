@@ -53,7 +53,7 @@ public struct FluentWebAuthNStorage: WebAuthNStorage {
     ///
     ///  - Parameters:
     ///    - from: ``CreateWebAuthN`` holding the credential and user_id to link to
-    ///       the ``PersonModel`` for.
+    ///       the ``Person`` for.
     public func create(from: CreateWebAuthN) throws -> WebAuthNModel? {
         let dbModel = FluentWebAuthnCredential(credential: from.publicKey, userId: from.userUuid)
         let _ = dbModel.save(on: fluent.db())

@@ -9,5 +9,5 @@ experience to clients.
 ## Topics
 
  - ``Person``
+ - ``Timeline``
  - ``Status``
- - ``Link``

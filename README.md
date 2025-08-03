@@ -6,7 +6,7 @@
 # swiftodon
 
 <a href="https://jonpulfer.github.io/swiftodon/documentation/app/">
-  <img src="https://img.shields.io/badge/documentation-blue" alt="Go to the documentation" height="32" />
+  <img src="https://img.shields.io/badge/documentation-orange" alt="Go to the documentation" height="32" />
 </a>
 
 ## ActivityPub server

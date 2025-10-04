@@ -14,11 +14,11 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     env:
-      JWT_SECRET: 'some test value'
+      AUTH_JWT_SECRET: 'some test value'
     strategy:
       matrix:
         image:
-          - 'swift:6.0'
+          - 'swift:6.2'
     container:
       image: ${{ matrix.image }}
     steps:

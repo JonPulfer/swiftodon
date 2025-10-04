@@ -29,19 +29,22 @@ typealias AppRequestContext = BasicSessionRequestContext<UUID, Person>
 ///  Build application
 /// - Parameter arguments: application arguments
 public func buildApplication(_ arguments: some AppArguments) async throws -> some ApplicationProtocol {
-    // Bootstrap observability backends (with short export intervals for demo purposes).
+    var envProviders: [Configuration.EnvironmentVariablesProvider] = [EnvironmentVariablesProvider()]
+    do {
+        let envFileProvider = try await EnvironmentVariablesProvider(environmentFilePath: ".env")
+        envProviders.append(envFileProvider)
+    } catch {
+        // do nothing
+    }
 
-    let appConfig = try await ConfigReader(
-        providers: [
-            EnvironmentVariablesProvider(
-                environmentFilePath: ".env"
-            )
-        ]
+    let appConfig = ConfigReader(
+        providers: envProviders
     )
     let databaseConfig = appConfig.scoped(to: "database")
     let authConfig = appConfig.scoped(to: "auth")
 
     let observability = try OTel.bootstrap(configuration: otelConfig(using: appConfig))
+    let logger: Logger = .init(label: "swiftodon")
 
     /// Fluent is being used for storing relational data.
     ///
@@ -49,7 +52,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
     ///  - Change the dependencies in the 'Package' file
     ///  - Change the imports to use the new driver
     ///  - Change the database settings here
-    let logger = Logger(label: "swiftodon")
+
     let fluent = Fluent(logger: logger)
     if arguments.inMemoryDatabase {
         fluent.databases.use(.sqlite(.memory), as: .sqlite)

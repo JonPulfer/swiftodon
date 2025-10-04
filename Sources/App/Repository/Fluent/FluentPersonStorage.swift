@@ -82,8 +82,6 @@ public struct FluentPersonStorage: PersonStorage, UserSessionRepository {
     }
 }
 
-extension String: Sendable {}
-
 final class FluentPersonModel: Model, @unchecked Sendable {
     static let schema = "person"
 

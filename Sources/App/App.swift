@@ -1,7 +1,8 @@
 import ArgumentParser
+import Configuration
+import Foundation
 import Hummingbird
 import Logging
-import Foundation
 
 @main
 struct App: AsyncParsableCommand, AppArguments {

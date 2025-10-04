@@ -34,3 +34,13 @@ public struct TimelineItem: Codable {
         self.createdAtSecondsSinceEpoch = ParseRFCTimestampToUTC(fromString: statusCreatedAt).timeIntervalSince1970
     }
 }
+
+public struct TimelineCriteria: Sendable {
+    public let accountId: String
+}
+
+public protocol TimelineStorage: Sendable {
+    func get(criteria: TimelineCriteria) async -> Timeline?
+    func create(from timeline: Timeline) async throws
+    func addItem(to timeline: Timeline, item: TimelineItem) async throws
+}

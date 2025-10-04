@@ -23,6 +23,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0"..<"4.0.0"),
         .package(url: "https://github.com/apple/swift-asn1.git", .upToNextMajor(from: "1.0.0")),
+		.package(url: "https://github.com/swift-otel/swift-otel.git", from: "1.0.0"),
+		.package(url: "https://github.com/apple/swift-configuration", .upToNextMinor(from: "0.1.0")),
 
         // other dependencies
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.1.0"),
@@ -41,6 +43,8 @@ let package = Package(
                 .product(name: "Mustache", package: "swift-mustache"),
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .product(name: "SwiftASN1", package: "swift-asn1"),
+				.product(name: "OTel", package: "swift-otel"),
+				.product(name: "Configuration", package: "swift-configuration"),
                 "MastodonData",
                 "Storage",
             ],

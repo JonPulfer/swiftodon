@@ -33,6 +33,9 @@ public struct WebFinger: ResponseEncodable, Codable, Equatable {
         if host.hasSuffix("/") {
             host.remove(at: host.endIndex)
         }
+        if host.hasPrefix("https://") {
+            host.replace("https://", with: "")
+        }
         if let accountName = extractAccountNameFromAcctValue(acctValue: acctValue) {
             self.links = [
                 Link(

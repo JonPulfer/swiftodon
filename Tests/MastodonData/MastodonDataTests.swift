@@ -65,6 +65,6 @@ import Testing
 @Suite struct TestWebFinger {
     @Test func TestInitWithValidData() throws {
         let webFinger = try WebFinger(acctValue: "acct:someone@host.com", hostname: "https://host.com")
-        #expect(webFinger.links[0].href == "https://host.com/users/someone")
+        #expect(webFinger.links[0].href == "https://host.com/accounts/someone")
     }
 }

@@ -1,3 +1,4 @@
+import Configuration
 import FluentSQLiteDriver
 import Foundation
 import Hummingbird
@@ -7,6 +8,7 @@ import HummingbirdRouter
 import JWTKit
 import Logging
 import Mustache
+import OTel
 
 /// Application arguments protocol. We use a protocol so we can call
 /// `buildApplication` inside Tests as well as in the App executable.
@@ -27,13 +29,19 @@ typealias AppRequestContext = BasicSessionRequestContext<UUID, Person>
 ///  Build application
 /// - Parameter arguments: application arguments
 public func buildApplication(_ arguments: some AppArguments) async throws -> some ApplicationProtocol {
-    let environment = Environment()
-    let logger = {
-        var logger = Logger(label: "swiftodon")
-        logger.logLevel =
-            arguments.logLevel ?? environment.get("LOG_LEVEL").map { Logger.Level(rawValue: $0) ?? .debug } ?? .info
-        return logger
-    }()
+    // Bootstrap observability backends (with short export intervals for demo purposes).
+
+    let appConfig = try await ConfigReader(
+        providers: [
+            EnvironmentVariablesProvider(
+                environmentFilePath: ".env"
+            )
+        ]
+    )
+    let databaseConfig = appConfig.scoped(to: "database")
+    let authConfig = appConfig.scoped(to: "auth")
+
+    let observability = try OTel.bootstrap(configuration: otelConfig(using: appConfig))
 
     /// Fluent is being used for storing relational data.
     ///
@@ -41,11 +49,15 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
     ///  - Change the dependencies in the 'Package' file
     ///  - Change the imports to use the new driver
     ///  - Change the database settings here
+    let logger = Logger(label: "swiftodon")
     let fluent = Fluent(logger: logger)
     if arguments.inMemoryDatabase {
         fluent.databases.use(.sqlite(.memory), as: .sqlite)
     } else {
-        fluent.databases.use(.sqlite(.file("db.sqlite"), sqlLogLevel: .info), as: .sqlite)
+        fluent.databases.use(
+            .sqlite(.file(databaseConfig.string(forKey: "sqliteFile", default: "db.sqlite")), sqlLogLevel: .info),
+            as: .sqlite
+        )
     }
     let persist = await FluentPersistDriver(fluent: fluent)
     await AddPersonMigrations(fluent: fluent)
@@ -68,17 +80,21 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
 
     /// JWT set up
     let keyCollection = JWTKeyCollection()
-    guard
-        let jwtSecret = ProcessInfo.processInfo.environment["JWT_SECRET"]
-    else {
+    do {
+        let jwtSecret = try authConfig.requiredString(forKey: "jwtSecret", isSecret: true)
+        await keyCollection.add(hmac: HMACKey.init(stringLiteral: jwtSecret), digestAlgorithm: .sha256)
+    } catch {
         logger.error("JWT_SECRET is not found in environment")
         throw JWTError.generic(identifier: "JWTKeyCollection", reason: "JWT_SECRET missing from env")
     }
-    await keyCollection.add(hmac: HMACKey.init(stringLiteral: jwtSecret), digestAlgorithm: .sha256)
 
     let router = RouterBuilder(context: WebAuthnRequestContext.self) {
+        TracingMiddleware()
+        MetricsMiddleware()
+
         // logging middleware
         LogRequestsMiddleware(.info)
+
         // add file middleware to serve HTML files
         FileMiddleware(searchForIndexHtml: true, logger: logger)
         // session middleware
@@ -142,6 +158,33 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
     )
 
     app.addServices(fluent)
+    app.addServices(observability)
 
     return app
+}
+
+func otelConfig(using appConfig: Configuration.ConfigReader) -> OTel.Configuration {
+
+    let otelConfig = appConfig.scoped(to: "otel")
+    let otelApiKey = otelConfig.string(forKey: "apiKey", isSecret: true, default: "")
+    let otelServer = otelConfig.string(forKey: "server", default: "https://api.eu1.honeycomb.io:443")
+
+    var config = OTel.Configuration.default
+    config.serviceName = "swiftodon"
+    config.diagnosticLogLevel = .error
+
+    config.logs.otlpExporter.endpoint = otelServer
+    config.metrics.otlpExporter.endpoint = otelServer
+    config.traces.otlpExporter.endpoint = otelServer
+    config.logs.batchLogRecordProcessor.scheduleDelay = .seconds(3)
+    config.logs.otlpExporter.headers.append(("x-honeycomb-team", otelApiKey))
+    config.metrics.otlpExporter.headers.append(("x-honeycomb-team", otelApiKey))
+    config.logs.otlpExporter.headers.append(("x-honeycomb-team", otelApiKey))
+    config.metrics.exportInterval = .seconds(3)
+    config.traces.batchSpanProcessor.scheduleDelay = .seconds(3)
+    config.logs.otlpExporter.protocol = .grpc
+    config.metrics.otlpExporter.protocol = .grpc
+    config.traces.otlpExporter.protocol = .grpc
+
+    return config
 }

@@ -25,6 +25,7 @@ struct StatusController: RouterController {
 
         // GET /api/v1/statuses/:id
         // Returns an individual status
+        Get("/:id", handler: get)
 
     }
 
@@ -32,5 +33,11 @@ struct StatusController: RouterController {
         let statusReceived = try await request.decode(as: MastodonStatus.self, context: context)
         try await repository.create(from: Status(fromMastodonStatus: statusReceived))
         return nil
+    }
+
+    @Sendable func get(request: Request, context: some RequestContext) async throws -> MastodonStatus? {
+        let id = try context.parameters.require("id", as: String.self)
+        let statusObject = await repository.get(criteria: StatusCriteria(id: id))
+        return statusObject?.toMastodonStatus()
     }
 }

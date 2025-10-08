@@ -51,6 +51,32 @@ public struct Status: Codable {
         trendable = fromMastodonStatus.trendable
         orderedMediaAttachments = fromMastodonStatus.orderedMediaAttachments
     }
+
+    func toMastodonStatus() -> MastodonStatus {
+        MastodonStatus.init(
+            id: self.id?.uuidString ?? "",
+            uri: self.uri,
+            content: self.content,
+            account: nil,
+            createdAt: self.createdAt,
+            updatedAt: self.updatedAt ?? "",
+            inReplyToId: self.inReplyToId ?? "",
+            reblogOfId: self.reblogOfId ?? "",
+            url: self.url,
+            sensitive: self.sensitive,
+            visibility: self.visibility,
+            spoilerText: self.spoilerText ?? "",
+            language: self.language,
+            conversationId: self.conversationId!,
+            accountId: self.accountId ?? "",
+            applicationId: self.applicationId ?? "",
+            inReplyToAccountId: self.inReplyToAccountId!,
+            pollId: self.pollId ?? "",
+            deletedAt: self.deletedAt!,
+            editedAt: self.editedAt ?? "",
+            orderedMediaAttachments: self.orderedMediaAttachments
+        )
+    }
 }
 
 public struct StatusCriteria: Sendable {

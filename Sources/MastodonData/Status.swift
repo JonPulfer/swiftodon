@@ -11,7 +11,7 @@ public struct MastodonStatus: ResponseEncodable, Codable, Equatable {
     public let id: String?
     public let uri: String
     public let content: String
-    public let account: MastodonAccount
+    public let account: MastodonAccount?
     public let createdAt: String
     public let updatedAt: String?
     public let inReplyToId: String?
@@ -64,7 +64,7 @@ public struct MastodonStatus: ResponseEncodable, Codable, Equatable {
         id: String,
         uri: String,
         content: String,
-        account: MastodonAccount,
+        account: MastodonAccount?,
         createdAt: String,
         updatedAt: String,
         inReplyToId: String,

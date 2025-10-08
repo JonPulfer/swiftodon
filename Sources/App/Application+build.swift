@@ -7,8 +7,10 @@ import HummingbirdFluent
 import HummingbirdRouter
 import JWTKit
 import Logging
+import Metrics
 import Mustache
 import OTel
+import Tracing
 
 /// Application arguments protocol. We use a protocol so we can call
 /// `buildApplication` inside Tests as well as in the App executable.
@@ -102,7 +104,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
         FileMiddleware(searchForIndexHtml: true, logger: logger)
         // session middleware
         SessionMiddleware(storage: persist)
-        RequestLoggerMiddleware()
+        //RequestLoggerMiddleware()
 
         HTMLController(
             mustacheLibrary: library,
@@ -174,7 +176,7 @@ func otelConfig(using appConfig: Configuration.ConfigReader) -> OTel.Configurati
 
     var config = OTel.Configuration.default
     config.serviceName = "swiftodon"
-    config.diagnosticLogLevel = .error
+    config.diagnosticLogLevel = .info
 
     config.logs.otlpExporter.endpoint = otelServer
     config.metrics.otlpExporter.endpoint = otelServer
@@ -182,7 +184,7 @@ func otelConfig(using appConfig: Configuration.ConfigReader) -> OTel.Configurati
     config.logs.batchLogRecordProcessor.scheduleDelay = .seconds(3)
     config.logs.otlpExporter.headers.append(("x-honeycomb-team", otelApiKey))
     config.metrics.otlpExporter.headers.append(("x-honeycomb-team", otelApiKey))
-    config.logs.otlpExporter.headers.append(("x-honeycomb-team", otelApiKey))
+    config.traces.otlpExporter.headers.append(("x-honeycomb-team", otelApiKey))
     config.metrics.exportInterval = .seconds(3)
     config.traces.batchSpanProcessor.scheduleDelay = .seconds(3)
     config.logs.otlpExporter.protocol = .grpc
